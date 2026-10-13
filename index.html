@@ -1,0 +1,996 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="theme-color" content="#ffb86b">
+<title>へんてこペイント｜ふらっとgames</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🖍️</text></svg>">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;font-family:"Hiragino Maru Gothic ProN","Hiragino Sans","Rounded Mplus 1c",system-ui,sans-serif;color:#3b2f4a;background:#fff6e8}
+body{background:radial-gradient(circle at 10% 10%,#ffe1ec 0 12%,transparent 13%),radial-gradient(circle at 90% 20%,#dff3ff 0 10%,transparent 11%),radial-gradient(circle at 80% 90%,#e6ffd9 0 12%,transparent 13%),#fff6e8;background-attachment:fixed}
+.wrap{max-width:560px;margin:0 auto;padding:12px 12px calc(70px + env(safe-area-inset-bottom))}
+h1{font-size:34px;text-align:center;margin:14px 0 2px;letter-spacing:2px}
+h1 span{display:inline-block;transform:rotate(-4deg)}h1 span:nth-child(2n){transform:rotate(5deg);color:#ff7a59}
+.sub{text-align:center;font-size:13px;color:#8a7a99;margin-bottom:14px}
+.card{background:#fff;border-radius:18px;box-shadow:0 3px 0 #f0d9c4,0 6px 18px rgba(120,80,40,.08);padding:14px;margin:10px 0}
+.btn{display:block;width:100%;border:0;border-radius:14px;padding:14px;font:inherit;font-size:17px;font-weight:700;background:#ff9f5a;color:#fff;box-shadow:0 4px 0 #e07a35;margin:8px 0;cursor:pointer}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 #e07a35}
+.btn.b2{background:#6cc3ff;box-shadow:0 4px 0 #3b98d6}.btn.b3{background:#8bd17c;box-shadow:0 4px 0 #5ea84f}.btn.g{background:#e9e1f0;color:#5a4a6a;box-shadow:0 4px 0 #c9bcd6}
+.btn.sm{display:inline-block;width:auto;padding:8px 12px;font-size:14px;margin:4px 2px}
+.btn:disabled{opacity:.45}
+.row{display:flex;gap:8px;align-items:center}.row>*{flex:1}
+input[type=text]{font:inherit;font-size:17px;padding:11px;border-radius:12px;border:2px solid #f0d9c4;width:100%;background:#fffdf9}
+select{font:inherit;font-size:14px;padding:8px;border-radius:10px;border:2px solid #f0d9c4;background:#fff}
+.seat{display:flex;gap:6px;align-items:center;padding:6px 0;border-bottom:1px dashed #f0e2d4}.seat .em{font-size:26px}
+.seat input{flex:1;padding:8px;font-size:15px}
+.x{border:0;background:#ffe3e3;color:#c55;border-radius:10px;padding:8px 10px;font-weight:700}
+.hide{display:none!important}
+.scores{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:6px 0}
+.chip{background:#fff;border-radius:20px;padding:4px 10px;font-size:13px;box-shadow:0 2px 0 #f0d9c4}.chip.ans{background:#ffe9a8}.chip b{color:#ff7a59}
+.phase{text-align:center;font-weight:700;font-size:18px;margin:6px 0}
+.topic{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.topic div{background:#fff8ef;border:2px solid #f6dcc3;border-radius:12px;padding:8px;font-weight:700;text-align:left;font-size:15px}
+.topic div i{font-style:normal;display:inline-block;width:22px;height:22px;line-height:22px;text-align:center;border-radius:6px;background:#ffcf8c;color:#fff;margin-right:6px;font-size:13px}
+.topic div.on{background:#ff9f5a;color:#fff;border-color:#ff9f5a;transform:scale(1.03)}.topic div.on i{background:#fff;color:#ff7a59}
+.big{font-size:30px;font-weight:800;text-align:center;color:#ff7a59;margin:4px 0}
+.cv{width:100%;aspect-ratio:1;background:#fffefb;border-radius:14px;border:3px solid #ffd9b0;touch-action:none;display:block;background-image:radial-gradient(#f3e3d3 1px,transparent 1.2px);background-size:10% 10%}
+.tools{display:flex;gap:6px;margin-top:8px}.tools button{flex:1;border:0;border-radius:12px;padding:10px 4px;font:inherit;font-weight:700;font-size:15px;background:#f3ebf7;color:#5a4a6a}
+.tools button.on{background:#7a5af8;color:#fff}
+.count{text-align:center;font-size:15px;margin:6px}.count b{font-size:24px;color:#7a5af8}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tile{background:#fff;border-radius:14px;padding:6px;box-shadow:0 2px 0 #f0d9c4;position:relative}
+.tile canvas{width:100%;aspect-ratio:1;display:block;border-radius:10px;background:#fffefb}
+.tile .cap{font-size:12px;text-align:center;margin-top:3px}.tile.wait{display:flex;align-items:center;justify-content:center;aspect-ratio:1;font-size:40px;color:#e6cdb3;flex-direction:column}
+.tile.wait small{font-size:12px;color:#a99}.tile .no{position:absolute;left:6px;top:6px;background:#7a5af8;color:#fff;border-radius:8px;padding:1px 7px;font-size:12px;font-weight:700}
+.tile.hit{outline:4px solid #8bd17c}
+.glist{font-size:14px;margin:6px 0}.glist div{padding:3px 0}.ok{color:#3a9a3a;font-weight:700}.ng{color:#c55}
+.gate{text-align:center;padding:30px 10px}.gate .em{font-size:64px}
+.dice{position:fixed;inset:0;background:rgba(60,40,80,.45);display:flex;align-items:center;justify-content:center;z-index:50;flex-direction:column;color:#fff;font-weight:800;font-size:20px}
+.die{width:110px;height:110px;background:#fff;border-radius:22px;box-shadow:0 8px 0 #d9c2ab;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);padding:14px;margin-bottom:16px}
+.die.spin{animation:spin .25s linear infinite}@keyframes spin{0%{transform:rotate(0) scale(1)}50%{transform:rotate(180deg) scale(.9)}100%{transform:rotate(360deg) scale(1)}}
+.die.land{animation:land .45s cubic-bezier(.2,1.6,.4,1)}@keyframes land{from{transform:scale(1.6)}to{transform:scale(1)}}
+.pip{width:18px;height:18px;border-radius:50%;background:#ff7a59;align-self:center;justify-self:center;visibility:hidden}.pip.v{visibility:visible}
+.modal{position:fixed;inset:0;background:rgba(60,40,80,.4);z-index:40;display:flex;align-items:flex-end;justify-content:center}
+.modal .card{max-width:560px;width:100%;max-height:85vh;overflow:auto;border-radius:20px 20px 0 0;margin:0;font-size:14px;line-height:1.6}
+.fab{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(8px + env(safe-area-inset-bottom));background:#fff;border-radius:20px;padding:8px 16px;color:#5a4a6a;text-decoration:none;font-weight:700;box-shadow:0 3px 10px rgba(0,0,0,.12);font-size:14px;z-index:30}
+.credit{text-align:center;font-size:12px;color:#a99;margin-top:16px}
+.toast{position:fixed;top:12px;left:50%;transform:translateX(-50%);background:#3b2f4a;color:#fff;border-radius:12px;padding:10px 16px;z-index:60;font-size:14px}
+.code{font-size:36px;letter-spacing:6px;text-align:center;font-weight:800;color:#7a5af8}
+.conf{position:fixed;top:-20px;font-size:24px;z-index:70;animation:fall 1.8s linear forwards}@keyframes fall{to{transform:translateY(110vh) rotate(540deg)}}
+@media(min-width:900px){.wrap{max-width:900px}.gameGrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.tiles{grid-template-columns:1fr 1fr 1fr}}
+</style></head><body>
+<div class="wrap">
+ <section id="sTitle">
+  <h1><span>へ</span><span>ん</span><span>て</span><span>こ</span><br><span>ペ</span><span>イ</span><span>ン</span><span>ト</span></h1>
+  <div class="sub">まっすぐな線と まんまるの円だけで描いて当ててもらおう！<br>3〜6人・ふらっとgames</div>
+  <canvas id="titleCv" class="cv" style="max-width:260px;margin:0 auto 6px;border:0;background:none"></canvas>
+  <button class="btn" id="goLocal">📱 この端末で遊ぶ（CPU・回しっこ）</button>
+  <button class="btn b2" id="goOnline">🌐 オンラインで遊ぶ</button>
+  <button class="btn g" id="goRules">📖 ルール</button>
+  <div class="credit">ふらっとgames ／ 制作 watg</div>
+ </section>
+ <section id="sSetup" class="hide">
+  <div class="phase">プレイヤー（3〜6人）</div>
+  <div class="card"><div id="seatList"></div>
+   <div class="row"><button class="btn sm b3" id="addHuman">＋ 人</button><button class="btn sm b2" id="addCpu">＋ CPU</button></div>
+   <div style="font-size:12px;color:#998;margin-top:6px">人が2人以上なら1台を回して遊びます（回答者には見えないように渡す画面が出ます）。並び順＝時計回り。</div>
+  </div>
+  <button class="btn" id="startLocal">スタート！</button><button class="btn g" id="backTitle1">もどる</button>
+ </section>
+ <section id="sOnline" class="hide">
+  <div class="phase">オンライン</div>
+  <div class="card"><div style="font-size:13px">なまえ</div><input type="text" id="onName" maxlength="10" placeholder="なまえ">
+   <button class="btn" id="mkRoom">部屋をつくる</button>
+   <div style="font-size:13px;margin-top:8px">部屋コード</div><input type="text" id="onCode" maxlength="6" placeholder="例 AB3K" style="text-transform:uppercase">
+   <button class="btn b2" id="joinRoom">参加する</button></div>
+  <button class="btn g" id="backTitle2">もどる</button>
+ </section>
+ <section id="sLobby" class="hide">
+  <div class="phase">待合室</div>
+  <div class="card"><div style="text-align:center;font-size:13px">部屋コード</div><div class="code" id="lobCode"></div>
+   <button class="btn sm g" id="copyLink" style="display:block;margin:4px auto">🔗 招待リンクをコピー</button></div>
+  <div class="card"><div id="lobList"></div>
+   <div id="lobHost"><button class="btn sm b2" id="lobCpu">＋ CPU</button><button class="btn" id="lobStart">スタート！</button></div>
+   <div id="lobWait" class="hide" style="text-align:center;color:#998">ホストがスタートするのを待っています…</div></div>
+  <button class="btn g" id="lobLeave">やめる</button>
+ </section>
+ <section id="sGame" class="hide">
+  <div class="scores" id="scores"></div>
+  <div id="gameBody"></div>
+ </section>
+</div>
+<div id="rules" class="modal hide"><div class="card">
+ <h3 style="margin-top:0">📖 へんてこペイントのあそびかた</h3>
+ <p>1人が<b>回答者</b>、ほかのみんなが<b>描く人</b>です。お題カードには6つの言葉があり、回答者が🎲サイコロをふって出た番号の言葉がお題になります（回答者には見えません）。</p>
+ <p>描く人は<b>まっすぐな線</b>と<b>まんまるの円</b>だけで絵を描きます。大きさ・長さは自由。文字や記号はダメ（線だけで作る矢印はOK）。線と円の合計が<b>画数</b>で、自動で数えます。</p>
+ <p>みんな描けたら、<b>画数の少ない順</b>に1枚ずつ公開（同じ画数なら回答者から時計回りに近い人が先）。1枚公開されるごとに回答者は1回答えられます。公開した絵はそのまま見えます。</p>
+ <p><b>正解したら</b>：その絵を描いた人 +2点。回答者は 1枚目で +3点／2〜3枚目で +2点／4枚目以降で +1点。全部見ても当たらなければ誰も点なし。表記ゆれで外れになったら、描いた人が「正解にする」を押せます。</p>
+ <p>回答者を左隣（次の人）に交代し、全員が1回ずつ回答者をやったら終わり。点数がいちばん多い人の勝ち（同点は両方勝ち）。</p>
+ <p style="font-size:12px;color:#998">CPUについて正直に：CPUは絵を本当に見て理解しているわけではありません。お題を知った上で、強さ・お題の難しさ・何枚目か・絵の形の特徴（線と円の数など）から当たる確率を決めています。</p>
+ <button class="btn" id="rulesClose">とじる</button></div></div>
+<a class="fab" href="https://fuusan-games.github.io/fuusan-games/">🏠 ひろばへ</a>
+<script>/*! PeerJS v1.5.5 | MIT License | (c) 2015 Michelle Bu and Eric Zhang | https://peerjs.com */
+(()=>{function e(e,t,n,r){Object.defineProperty(e,t,{get:n,set:r,enumerable:!0,configurable:!0})}function t(e){return e&&e.__esModule?e.default:e}class n{constructor(){this.chunkedMTU=16300,this._dataCount=1,this.chunk=e=>{let t=[],n=e.byteLength,r=Math.ceil(n/this.chunkedMTU),i=0,s=0;for(;s<n;){let o=Math.min(n,s+this.chunkedMTU),a=e.slice(s,o),c={__peerData:this._dataCount,n:i,data:a,total:r};t.push(c),s=o,i++}return this._dataCount++,t}}}class r{append_buffer(e){this.flush(),this._parts.push(e)}append(e){this._pieces.push(e)}flush(){if(this._pieces.length>0){let e=new Uint8Array(this._pieces);this._parts.push(e),this._pieces=[]}}toArrayBuffer(){let e=[];for(let t of this._parts)e.push(t);return function(e){let t=0;for(let n of e)t+=n.byteLength;let n=new Uint8Array(t),r=0;for(let t of e){let e=new Uint8Array(t.buffer,t.byteOffset,t.byteLength);n.set(e,r),r+=t.byteLength}return n}(e).buffer}constructor(){this.encoder=new TextEncoder,this._pieces=[],this._parts=[]}}function i(e){return new o(e).unpack()}function s(e){let t=new a,n=t.pack(e);return n instanceof Promise?n.then(()=>t.getBuffer()):t.getBuffer()}class o{unpack(){let e,t=this.unpack_uint8();if(t<128)return t;if((224^t)<32)return(224^t)-32;if((e=160^t)<=15)return this.unpack_raw(e);if((e=176^t)<=15)return this.unpack_string(e);if((e=144^t)<=15)return this.unpack_array(e);if((e=128^t)<=15)return this.unpack_map(e);switch(t){case 192:return null;case 193:case 212:case 213:case 214:case 215:return;case 194:return!1;case 195:return!0;case 202:return this.unpack_float();case 203:return this.unpack_double();case 204:return this.unpack_uint8();case 205:return this.unpack_uint16();case 206:return this.unpack_uint32();case 207:return this.unpack_uint64();case 208:return this.unpack_int8();case 209:return this.unpack_int16();case 210:return this.unpack_int32();case 211:return this.unpack_int64();case 216:return e=this.unpack_uint16(),this.unpack_string(e);case 217:return e=this.unpack_uint32(),this.unpack_string(e);case 218:return e=this.unpack_uint16(),this.unpack_raw(e);case 219:return e=this.unpack_uint32(),this.unpack_raw(e);case 220:return e=this.unpack_uint16(),this.unpack_array(e);case 221:return e=this.unpack_uint32(),this.unpack_array(e);case 222:return e=this.unpack_uint16(),this.unpack_map(e);case 223:return e=this.unpack_uint32(),this.unpack_map(e)}}unpack_uint8(){let e=255&this.dataView[this.index];return this.index++,e}unpack_uint16(){let e=this.read(2),t=(255&e[0])*256+(255&e[1]);return this.index+=2,t}unpack_uint32(){let e=this.read(4),t=((256*e[0]+e[1])*256+e[2])*256+e[3];return this.index+=4,t}unpack_uint64(){let e=this.read(8),t=((((((256*e[0]+e[1])*256+e[2])*256+e[3])*256+e[4])*256+e[5])*256+e[6])*256+e[7];return this.index+=8,t}unpack_int8(){let e=this.unpack_uint8();return e<128?e:e-256}unpack_int16(){let e=this.unpack_uint16();return e<32768?e:e-65536}unpack_int32(){let e=this.unpack_uint32();return e<0x80000000?e:e-0x100000000}unpack_int64(){let e=this.unpack_uint64();return e<0x8000000000000000?e:e-0xffffffffffffffff}unpack_raw(e){if(this.length<this.index+e)throw Error(`BinaryPackFailure: index is out of range ${this.index} ${e} ${this.length}`);let t=this.dataBuffer.slice(this.index,this.index+e);return this.index+=e,t}unpack_string(e){let t,n,r=this.read(e),i=0,s="";for(;i<e;)(t=r[i])<160?(n=t,i++):(192^t)<32?(n=(31&t)<<6|63&r[i+1],i+=2):(224^t)<16?(n=(15&t)<<12|(63&r[i+1])<<6|63&r[i+2],i+=3):(n=(7&t)<<18|(63&r[i+1])<<12|(63&r[i+2])<<6|63&r[i+3],i+=4),s+=String.fromCodePoint(n);return this.index+=e,s}unpack_array(e){let t=Array(e);for(let n=0;n<e;n++)t[n]=this.unpack();return t}unpack_map(e){let t={};for(let n=0;n<e;n++)t[this.unpack()]=this.unpack();return t}unpack_float(){let e=this.unpack_uint32();return(0==e>>31?1:-1)*(8388607&e|8388608)*2**((e>>23&255)-127-23)}unpack_double(){let e=this.unpack_uint32(),t=this.unpack_uint32(),n=(e>>20&2047)-1023;return(0==e>>31?1:-1)*((1048575&e|1048576)*2**(n-20)+t*2**(n-52))}read(e){let t=this.index;if(t+e<=this.length)return this.dataView.subarray(t,t+e);throw Error("BinaryPackFailure: read index out of range")}constructor(e){this.index=0,this.dataBuffer=e,this.dataView=new Uint8Array(this.dataBuffer),this.length=this.dataBuffer.byteLength}}class a{getBuffer(){return this._bufferBuilder.toArrayBuffer()}pack(e){if("string"==typeof e)this.pack_string(e);else if("number"==typeof e)Math.floor(e)===e?this.pack_integer(e):this.pack_double(e);else if("boolean"==typeof e)!0===e?this._bufferBuilder.append(195):!1===e&&this._bufferBuilder.append(194);else if(void 0===e)this._bufferBuilder.append(192);else if("object"==typeof e)if(null===e)this._bufferBuilder.append(192);else{let t=e.constructor;if(e instanceof Array){let t=this.pack_array(e);if(t instanceof Promise)return t.then(()=>this._bufferBuilder.flush())}else if(e instanceof ArrayBuffer)this.pack_bin(new Uint8Array(e));else if("BYTES_PER_ELEMENT"in e)this.pack_bin(new Uint8Array(e.buffer,e.byteOffset,e.byteLength));else if(e instanceof Date)this.pack_string(e.toString());else if(e instanceof Blob)return e.arrayBuffer().then(e=>{this.pack_bin(new Uint8Array(e)),this._bufferBuilder.flush()});else if(t==Object||t.toString().startsWith("class")){let t=this.pack_object(e);if(t instanceof Promise)return t.then(()=>this._bufferBuilder.flush())}else throw Error(`Type "${t.toString()}" not yet supported`)}else throw Error(`Type "${typeof e}" not yet supported`);this._bufferBuilder.flush()}pack_bin(e){let t=e.length;if(t<=15)this.pack_uint8(160+t);else if(t<=65535)this._bufferBuilder.append(218),this.pack_uint16(t);else if(t<=0xffffffff)this._bufferBuilder.append(219),this.pack_uint32(t);else throw Error("Invalid length");this._bufferBuilder.append_buffer(e)}pack_string(e){let t=this._textEncoder.encode(e),n=t.length;if(n<=15)this.pack_uint8(176+n);else if(n<=65535)this._bufferBuilder.append(216),this.pack_uint16(n);else if(n<=0xffffffff)this._bufferBuilder.append(217),this.pack_uint32(n);else throw Error("Invalid length");this._bufferBuilder.append_buffer(t)}pack_array(e){let t=e.length;if(t<=15)this.pack_uint8(144+t);else if(t<=65535)this._bufferBuilder.append(220),this.pack_uint16(t);else if(t<=0xffffffff)this._bufferBuilder.append(221),this.pack_uint32(t);else throw Error("Invalid length");let n=r=>{if(r<t){let t=this.pack(e[r]);return t instanceof Promise?t.then(()=>n(r+1)):n(r+1)}};return n(0)}pack_integer(e){if(e>=-32&&e<=127)this._bufferBuilder.append(255&e);else if(e>=0&&e<=255)this._bufferBuilder.append(204),this.pack_uint8(e);else if(e>=-128&&e<=127)this._bufferBuilder.append(208),this.pack_int8(e);else if(e>=0&&e<=65535)this._bufferBuilder.append(205),this.pack_uint16(e);else if(e>=-32768&&e<=32767)this._bufferBuilder.append(209),this.pack_int16(e);else if(e>=0&&e<=0xffffffff)this._bufferBuilder.append(206),this.pack_uint32(e);else if(e>=-0x80000000&&e<=0x7fffffff)this._bufferBuilder.append(210),this.pack_int32(e);else if(e>=-0x8000000000000000&&e<=0x8000000000000000)this._bufferBuilder.append(211),this.pack_int64(e);else if(e>=0&&e<=0xffffffffffffffff)this._bufferBuilder.append(207),this.pack_uint64(e);else throw Error("Invalid integer")}pack_double(e){let t=0;e<0&&(t=1,e=-e);let n=Math.floor(Math.log(e)/Math.LN2),r=Math.floor((e/2**n-1)*0x10000000000000),i=t<<31|n+1023<<20|r/0x100000000&1048575;this._bufferBuilder.append(203),this.pack_int32(i),this.pack_int32(r%0x100000000)}pack_object(e){let t=Object.keys(e),n=t.length;if(n<=15)this.pack_uint8(128+n);else if(n<=65535)this._bufferBuilder.append(222),this.pack_uint16(n);else if(n<=0xffffffff)this._bufferBuilder.append(223),this.pack_uint32(n);else throw Error("Invalid length");let r=n=>{if(n<t.length){let i=t[n];if(e.hasOwnProperty(i)){this.pack(i);let t=this.pack(e[i]);if(t instanceof Promise)return t.then(()=>r(n+1))}return r(n+1)}};return r(0)}pack_uint8(e){this._bufferBuilder.append(e)}pack_uint16(e){this._bufferBuilder.append(e>>8),this._bufferBuilder.append(255&e)}pack_uint32(e){let t=0|e;this._bufferBuilder.append((0xff000000&t)>>>24),this._bufferBuilder.append((0xff0000&t)>>>16),this._bufferBuilder.append((65280&t)>>>8),this._bufferBuilder.append(255&t)}pack_uint64(e){let t=e/0x100000000,n=e%0x100000000;this._bufferBuilder.append((0xff000000&t)>>>24),this._bufferBuilder.append((0xff0000&t)>>>16),this._bufferBuilder.append((65280&t)>>>8),this._bufferBuilder.append(255&t),this._bufferBuilder.append((0xff000000&n)>>>24),this._bufferBuilder.append((0xff0000&n)>>>16),this._bufferBuilder.append((65280&n)>>>8),this._bufferBuilder.append(255&n)}pack_int8(e){this._bufferBuilder.append(255&e)}pack_int16(e){this._bufferBuilder.append((65280&e)>>8),this._bufferBuilder.append(255&e)}pack_int32(e){this._bufferBuilder.append(e>>>24&255),this._bufferBuilder.append((0xff0000&e)>>>16),this._bufferBuilder.append((65280&e)>>>8),this._bufferBuilder.append(255&e)}pack_int64(e){let t=Math.floor(e/0x100000000),n=e%0x100000000;this._bufferBuilder.append((0xff000000&t)>>>24),this._bufferBuilder.append((0xff0000&t)>>>16),this._bufferBuilder.append((65280&t)>>>8),this._bufferBuilder.append(255&t),this._bufferBuilder.append((0xff000000&n)>>>24),this._bufferBuilder.append((0xff0000&n)>>>16),this._bufferBuilder.append((65280&n)>>>8),this._bufferBuilder.append(255&n)}constructor(){this._bufferBuilder=new r,this._textEncoder=new TextEncoder}}"use strict";let c=!0,p=!0;function d(e,t,n){let r=e.match(t);return r&&r.length>=n&&parseInt(r[n],10)}function l(e,t,n){if(!e.RTCPeerConnection)return;let r=e.RTCPeerConnection.prototype,i=r.addEventListener;r.addEventListener=function(e,r){if(e!==t)return i.apply(this,arguments);let s=e=>{let t=n(e);t&&(r.handleEvent?r.handleEvent(t):r(t))};return this._eventMap=this._eventMap||{},this._eventMap[t]||(this._eventMap[t]=new Map),this._eventMap[t].set(r,s),i.apply(this,[e,s])};let s=r.removeEventListener;r.removeEventListener=function(e,n){if(e!==t||!this._eventMap||!this._eventMap[t]||!this._eventMap[t].has(n))return s.apply(this,arguments);let r=this._eventMap[t].get(n);return this._eventMap[t].delete(n),0===this._eventMap[t].size&&delete this._eventMap[t],0===Object.keys(this._eventMap).length&&delete this._eventMap,s.apply(this,[e,r])},Object.defineProperty(r,"on"+t,{get(){return this["_on"+t]},set(e){this["_on"+t]&&(this.removeEventListener(t,this["_on"+t]),delete this["_on"+t]),e&&this.addEventListener(t,this["_on"+t]=e)},enumerable:!0,configurable:!0})}function h(e){return"boolean"!=typeof e?Error("Argument type: "+typeof e+". Please use a boolean."):(c=e,e?"adapter.js logging disabled":"adapter.js logging enabled")}function u(e){return"boolean"!=typeof e?Error("Argument type: "+typeof e+". Please use a boolean."):(p=!e,"adapter.js deprecation warnings "+(e?"disabled":"enabled"))}function f(){"object"==typeof window&&(c||"undefined"!=typeof console&&"function"==typeof console.log&&console.log.apply(console,arguments))}function m(e,t){p&&console.warn(e+" is deprecated, please use "+t+" instead.")}function _(e){return"[object Object]"===Object.prototype.toString.call(e)}function g(e,t,n){let r=n?"outbound-rtp":"inbound-rtp",i=new Map;if(null===t)return i;let s=[];return e.forEach(e=>{"track"===e.type&&e.trackIdentifier===t.id&&s.push(e)}),s.forEach(t=>{e.forEach(n=>{n.type===r&&n.trackId===t.id&&function e(t,n,r){!n||r.has(n.id)||(r.set(n.id,n),Object.keys(n).forEach(i=>{i.endsWith("Id")?e(t,t.get(n[i]),r):i.endsWith("Ids")&&n[i].forEach(n=>{e(t,t.get(n),r)})}))}(e,n,i)})}),i}"use strict";var y={};function C(e,t){let n=e&&e.navigator;if(!n.mediaDevices)return;let r=function(e){if("object"!=typeof e||e.mandatory||e.optional)return e;let t={};return Object.keys(e).forEach(n=>{if("require"===n||"advanced"===n||"mediaSource"===n)return;let r="object"==typeof e[n]?e[n]:{ideal:e[n]};void 0!==r.exact&&"number"==typeof r.exact&&(r.min=r.max=r.exact);let i=function(e,t){return e?e+t.charAt(0).toUpperCase()+t.slice(1):"deviceId"===t?"sourceId":t};if(void 0!==r.ideal){t.optional=t.optional||[];let e={};"number"==typeof r.ideal?(e[i("min",n)]=r.ideal,t.optional.push(e),(e={})[i("max",n)]=r.ideal):e[i("",n)]=r.ideal,t.optional.push(e)}void 0!==r.exact&&"number"!=typeof r.exact?(t.mandatory=t.mandatory||{},t.mandatory[i("",n)]=r.exact):["min","max"].forEach(e=>{void 0!==r[e]&&(t.mandatory=t.mandatory||{},t.mandatory[i(e,n)]=r[e])})}),e.advanced&&(t.optional=(t.optional||[]).concat(e.advanced)),t},i=function(e,i){if(t.version>=61)return i(e);if((e=JSON.parse(JSON.stringify(e)))&&"object"==typeof e.audio){let t=function(e,t,n){t in e&&!(n in e)&&(e[n]=e[t],delete e[t])};t((e=JSON.parse(JSON.stringify(e))).audio,"autoGainControl","googAutoGainControl"),t(e.audio,"noiseSuppression","googNoiseSuppression"),e.audio=r(e.audio)}if(e&&"object"==typeof e.video){let s=e.video.facingMode;s=s&&("object"==typeof s?s:{ideal:s});let o=t.version<66;if(s&&("user"===s.exact||"environment"===s.exact||"user"===s.ideal||"environment"===s.ideal)&&!(n.mediaDevices.getSupportedConstraints&&n.mediaDevices.getSupportedConstraints().facingMode&&!o)){let t;if(delete e.video.facingMode,"environment"===s.exact||"environment"===s.ideal?t=["back","rear"]:("user"===s.exact||"user"===s.ideal)&&(t=["front"]),t)return n.mediaDevices.enumerateDevices().then(n=>{let o=(n=n.filter(e=>"videoinput"===e.kind)).find(e=>t.some(t=>e.label.toLowerCase().includes(t)));return!o&&n.length&&t.includes("back")&&(o=n[n.length-1]),o&&(e.video.deviceId=s.exact?{exact:o.deviceId}:{ideal:o.deviceId}),e.video=r(e.video),f("chrome: "+JSON.stringify(e)),i(e)})}e.video=r(e.video)}return f("chrome: "+JSON.stringify(e)),i(e)},s=function(e){return t.version>=64?e:{name:({PermissionDeniedError:"NotAllowedError",PermissionDismissedError:"NotAllowedError",InvalidStateError:"NotAllowedError",DevicesNotFoundError:"NotFoundError",ConstraintNotSatisfiedError:"OverconstrainedError",TrackStartError:"NotReadableError",MediaDeviceFailedDueToShutdown:"NotAllowedError",MediaDeviceKillSwitchOn:"NotAllowedError",TabCaptureError:"AbortError",ScreenCaptureError:"AbortError",DeviceCaptureError:"AbortError"})[e.name]||e.name,message:e.message,constraint:e.constraint||e.constraintName,toString(){return this.name+(this.message&&": ")+this.message}}};if(n.getUserMedia=(function(e,t,r){i(e,e=>{n.webkitGetUserMedia(e,t,e=>{r&&r(s(e))})})}).bind(n),n.mediaDevices.getUserMedia){let e=n.mediaDevices.getUserMedia.bind(n.mediaDevices);n.mediaDevices.getUserMedia=function(t){return i(t,t=>e(t).then(e=>{if(t.audio&&!e.getAudioTracks().length||t.video&&!e.getVideoTracks().length)throw e.getTracks().forEach(e=>{e.stop()}),new DOMException("","NotFoundError");return e},e=>Promise.reject(s(e))))}}}"use strict";function v(e){e.MediaStream=e.MediaStream||e.webkitMediaStream}function b(e){if("object"!=typeof e||!e.RTCPeerConnection||"ontrack"in e.RTCPeerConnection.prototype)l(e,"track",e=>(e.transceiver||Object.defineProperty(e,"transceiver",{value:{receiver:e.receiver}}),e));else{Object.defineProperty(e.RTCPeerConnection.prototype,"ontrack",{get(){return this._ontrack},set(e){this._ontrack&&this.removeEventListener("track",this._ontrack),this.addEventListener("track",this._ontrack=e)},enumerable:!0,configurable:!0});let t=e.RTCPeerConnection.prototype.setRemoteDescription;e.RTCPeerConnection.prototype.setRemoteDescription=function(){return this._ontrackpoly||(this._ontrackpoly=t=>{t.stream.addEventListener("addtrack",n=>{let r;r=e.RTCPeerConnection.prototype.getReceivers?this.getReceivers().find(e=>e.track&&e.track.id===n.track.id):{track:n.track};let i=new Event("track");i.track=n.track,i.receiver=r,i.transceiver={receiver:r},i.streams=[t.stream],this.dispatchEvent(i)}),t.stream.getTracks().forEach(n=>{let r;r=e.RTCPeerConnection.prototype.getReceivers?this.getReceivers().find(e=>e.track&&e.track.id===n.id):{track:n};let i=new Event("track");i.track=n,i.receiver=r,i.transceiver={receiver:r},i.streams=[t.stream],this.dispatchEvent(i)})},this.addEventListener("addstream",this._ontrackpoly)),t.apply(this,arguments)}}}function T(e){if("object"==typeof e&&e.RTCPeerConnection&&!("getSenders"in e.RTCPeerConnection.prototype)&&"createDTMFSender"in e.RTCPeerConnection.prototype){let t=function(e,t){return{track:t,get dtmf(){return void 0===this._dtmf&&("audio"===t.kind?this._dtmf=e.createDTMFSender(t):this._dtmf=null),this._dtmf},_pc:e}};if(!e.RTCPeerConnection.prototype.getSenders){e.RTCPeerConnection.prototype.getSenders=function(){return this._senders=this._senders||[],this._senders.slice()};let n=e.RTCPeerConnection.prototype.addTrack;e.RTCPeerConnection.prototype.addTrack=function(e,r){let i=n.apply(this,arguments);return i||(i=t(this,e),this._senders.push(i)),i};let r=e.RTCPeerConnection.prototype.removeTrack;e.RTCPeerConnection.prototype.removeTrack=function(e){r.apply(this,arguments);let t=this._senders.indexOf(e);-1!==t&&this._senders.splice(t,1)}}let n=e.RTCPeerConnection.prototype.addStream;e.RTCPeerConnection.prototype.addStream=function(e){this._senders=this._senders||[],n.apply(this,[e]),e.getTracks().forEach(e=>{this._senders.push(t(this,e))})};let r=e.RTCPeerConnection.prototype.removeStream;e.RTCPeerConnection.prototype.removeStream=function(e){this._senders=this._senders||[],r.apply(this,[e]),e.getTracks().forEach(e=>{let t=this._senders.find(t=>t.track===e);t&&this._senders.splice(this._senders.indexOf(t),1)})}}else if("object"==typeof e&&e.RTCPeerConnection&&"getSenders"in e.RTCPeerConnection.prototype&&"createDTMFSender"in e.RTCPeerConnection.prototype&&e.RTCRtpSender&&!("dtmf"in e.RTCRtpSender.prototype)){let t=e.RTCPeerConnection.prototype.getSenders;e.RTCPeerConnection.prototype.getSenders=function(){let e=t.apply(this,[]);return e.forEach(e=>e._pc=this),e},Object.defineProperty(e.RTCRtpSender.prototype,"dtmf",{get(){return void 0===this._dtmf&&("audio"===this.track.kind?this._dtmf=this._pc.createDTMFSender(this.track):this._dtmf=null),this._dtmf}})}}function S(e){if(!("object"==typeof e&&e.RTCPeerConnection&&e.RTCRtpSender&&e.RTCRtpReceiver))return;if(!("getStats"in e.RTCRtpSender.prototype)){let t=e.RTCPeerConnection.prototype.getSenders;t&&(e.RTCPeerConnection.prototype.getSenders=function(){let e=t.apply(this,[]);return e.forEach(e=>e._pc=this),e});let n=e.RTCPeerConnection.prototype.addTrack;n&&(e.RTCPeerConnection.prototype.addTrack=function(){let e=n.apply(this,arguments);return e._pc=this,e}),e.RTCRtpSender.prototype.getStats=function(){let e=this;return this._pc.getStats().then(t=>g(t,e.track,!0))}}if(!("getStats"in e.RTCRtpReceiver.prototype)){let t=e.RTCPeerConnection.prototype.getReceivers;t&&(e.RTCPeerConnection.prototype.getReceivers=function(){let e=t.apply(this,[]);return e.forEach(e=>e._pc=this),e}),l(e,"track",e=>(e.receiver._pc=e.srcElement,e)),e.RTCRtpReceiver.prototype.getStats=function(){let e=this;return this._pc.getStats().then(t=>g(t,e.track,!1))}}if(!("getStats"in e.RTCRtpSender.prototype&&"getStats"in e.RTCRtpReceiver.prototype))return;let t=e.RTCPeerConnection.prototype.getStats;e.RTCPeerConnection.prototype.getStats=function(){if(arguments.length>0&&arguments[0]instanceof e.MediaStreamTrack){let e,t,n,r=arguments[0];return(this.getSenders().forEach(t=>{t.track===r&&(e?n=!0:e=t)}),this.getReceivers().forEach(e=>(e.track===r&&(t?n=!0:t=e),e.track===r)),n||e&&t)?Promise.reject(new DOMException("There are more than one sender or receiver for the track.","InvalidAccessError")):e?e.getStats():t?t.getStats():Promise.reject(new DOMException("There is no sender or receiver for the track.","InvalidAccessError"))}return t.apply(this,arguments)}}function k(e){e.RTCPeerConnection.prototype.getLocalStreams=function(){return this._shimmedLocalStreams=this._shimmedLocalStreams||{},Object.keys(this._shimmedLocalStreams).map(e=>this._shimmedLocalStreams[e][0])};let t=e.RTCPeerConnection.prototype.addTrack;e.RTCPeerConnection.prototype.addTrack=function(e,n){if(!n)return t.apply(this,arguments);this._shimmedLocalStreams=this._shimmedLocalStreams||{};let r=t.apply(this,arguments);return this._shimmedLocalStreams[n.id]?-1===this._shimmedLocalStreams[n.id].indexOf(r)&&this._shimmedLocalStreams[n.id].push(r):this._shimmedLocalStreams[n.id]=[n,r],r};let n=e.RTCPeerConnection.prototype.addStream;e.RTCPeerConnection.prototype.addStream=function(e){this._shimmedLocalStreams=this._shimmedLocalStreams||{},e.getTracks().forEach(e=>{if(this.getSenders().find(t=>t.track===e))throw new DOMException("Track already exists.","InvalidAccessError")});let t=this.getSenders();n.apply(this,arguments);let r=this.getSenders().filter(e=>-1===t.indexOf(e));this._shimmedLocalStreams[e.id]=[e].concat(r)};let r=e.RTCPeerConnection.prototype.removeStream;e.RTCPeerConnection.prototype.removeStream=function(e){return this._shimmedLocalStreams=this._shimmedLocalStreams||{},delete this._shimmedLocalStreams[e.id],r.apply(this,arguments)};let i=e.RTCPeerConnection.prototype.removeTrack;e.RTCPeerConnection.prototype.removeTrack=function(e){return this._shimmedLocalStreams=this._shimmedLocalStreams||{},e&&Object.keys(this._shimmedLocalStreams).forEach(t=>{let n=this._shimmedLocalStreams[t].indexOf(e);-1!==n&&this._shimmedLocalStreams[t].splice(n,1),1===this._shimmedLocalStreams[t].length&&delete this._shimmedLocalStreams[t]}),i.apply(this,arguments)}}function R(e,t){if(!e.RTCPeerConnection)return;if(e.RTCPeerConnection.prototype.addTrack&&t.version>=65)return k(e);let n=e.RTCPeerConnection.prototype.getLocalStreams;e.RTCPeerConnection.prototype.getLocalStreams=function(){let e=n.apply(this);return this._reverseStreams=this._reverseStreams||{},e.map(e=>this._reverseStreams[e.id])};let r=e.RTCPeerConnection.prototype.addStream;e.RTCPeerConnection.prototype.addStream=function(t){if(this._streams=this._streams||{},this._reverseStreams=this._reverseStreams||{},t.getTracks().forEach(e=>{if(this.getSenders().find(t=>t.track===e))throw new DOMException("Track already exists.","InvalidAccessError")}),!this._reverseStreams[t.id]){let n=new e.MediaStream(t.getTracks());this._streams[t.id]=n,this._reverseStreams[n.id]=t,t=n}r.apply(this,[t])};let i=e.RTCPeerConnection.prototype.removeStream;function s(e,t){let n=t.sdp;return Object.keys(e._reverseStreams||[]).forEach(t=>{let r=e._reverseStreams[t],i=e._streams[r.id];n=n.replace(RegExp(i.id,"g"),r.id)}),new RTCSessionDescription({type:t.type,sdp:n})}e.RTCPeerConnection.prototype.removeStream=function(e){this._streams=this._streams||{},this._reverseStreams=this._reverseStreams||{},i.apply(this,[this._streams[e.id]||e]),delete this._reverseStreams[this._streams[e.id]?this._streams[e.id].id:e.id],delete this._streams[e.id]},e.RTCPeerConnection.prototype.addTrack=function(t,n){if("closed"===this.signalingState)throw new DOMException("The RTCPeerConnection's signalingState is 'closed'.","InvalidStateError");let r=[].slice.call(arguments,1);if(1!==r.length||!r[0].getTracks().find(e=>e===t))throw new DOMException("The adapter.js addTrack polyfill only supports a single  stream which is associated with the specified track.","NotSupportedError");if(this.getSenders().find(e=>e.track===t))throw new DOMException("Track already exists.","InvalidAccessError");this._streams=this._streams||{},this._reverseStreams=this._reverseStreams||{};let i=this._streams[n.id];if(i)i.addTrack(t),Promise.resolve().then(()=>{this.dispatchEvent(new Event("negotiationneeded"))});else{let r=new e.MediaStream([t]);this._streams[n.id]=r,this._reverseStreams[r.id]=n,this.addStream(r)}return this.getSenders().find(e=>e.track===t)},["createOffer","createAnswer"].forEach(function(t){let n=e.RTCPeerConnection.prototype[t];e.RTCPeerConnection.prototype[t]=({[t](){let e=arguments,t=arguments.length&&"function"==typeof arguments[0];return t?n.apply(this,[t=>{let n=s(this,t);e[0].apply(null,[n])},t=>{e[1]&&e[1].apply(null,t)},arguments[2]]):n.apply(this,arguments).then(e=>s(this,e))}})[t]});let o=e.RTCPeerConnection.prototype.setLocalDescription;e.RTCPeerConnection.prototype.setLocalDescription=function(){var e,t;let n;return arguments.length&&arguments[0].type?(arguments[0]=(e=this,t=arguments[0],n=t.sdp,Object.keys(e._reverseStreams||[]).forEach(t=>{let r=e._reverseStreams[t],i=e._streams[r.id];n=n.replace(RegExp(r.id,"g"),i.id)}),new RTCSessionDescription({type:t.type,sdp:n})),o.apply(this,arguments)):o.apply(this,arguments)};let a=Object.getOwnPropertyDescriptor(e.RTCPeerConnection.prototype,"localDescription");Object.defineProperty(e.RTCPeerConnection.prototype,"localDescription",{get(){let e=a.get.apply(this);return""===e.type?e:s(this,e)}}),e.RTCPeerConnection.prototype.removeTrack=function(e){let t;if("closed"===this.signalingState)throw new DOMException("The RTCPeerConnection's signalingState is 'closed'.","InvalidStateError");if(!e._pc)throw new DOMException("Argument 1 of RTCPeerConnection.removeTrack does not implement interface RTCRtpSender.","TypeError");if(e._pc!==this)throw new DOMException("Sender was not created by this connection.","InvalidAccessError");this._streams=this._streams||{},Object.keys(this._streams).forEach(n=>{this._streams[n].getTracks().find(t=>e.track===t)&&(t=this._streams[n])}),t&&(1===t.getTracks().length?this.removeStream(this._reverseStreams[t.id]):t.removeTrack(e.track),this.dispatchEvent(new Event("negotiationneeded")))}}function P(e,t){!e.RTCPeerConnection&&e.webkitRTCPeerConnection&&(e.RTCPeerConnection=e.webkitRTCPeerConnection),e.RTCPeerConnection&&t.version<53&&["setLocalDescription","setRemoteDescription","addIceCandidate"].forEach(function(t){let n=e.RTCPeerConnection.prototype[t];e.RTCPeerConnection.prototype[t]=({[t](){return arguments[0]=new("addIceCandidate"===t?e.RTCIceCandidate:e.RTCSessionDescription)(arguments[0]),n.apply(this,arguments)}})[t]})}function w(e,t){l(e,"negotiationneeded",e=>{let n=e.target;if(!(t.version<72)&&(!n.getConfiguration||"plan-b"!==n.getConfiguration().sdpSemantics)||"stable"===n.signalingState)return e})}"use strict";e(y,"shimMediaStream",()=>v),e(y,"shimOnTrack",()=>b),e(y,"shimGetSendersWithDtmf",()=>T),e(y,"shimSenderReceiverGetStats",()=>S),e(y,"shimAddTrackRemoveTrackWithNative",()=>k),e(y,"shimAddTrackRemoveTrack",()=>R),e(y,"shimPeerConnection",()=>P),e(y,"fixNegotiationNeeded",()=>w),e(y,"shimGetUserMedia",()=>C);var E={};function x(e,t){let n=e&&e.navigator,r=e&&e.MediaStreamTrack;if(n.getUserMedia=function(e,t,r){m("navigator.getUserMedia","navigator.mediaDevices.getUserMedia"),n.mediaDevices.getUserMedia(e).then(t,r)},!(t.version>55&&"autoGainControl"in n.mediaDevices.getSupportedConstraints())){let e=function(e,t,n){t in e&&!(n in e)&&(e[n]=e[t],delete e[t])},t=n.mediaDevices.getUserMedia.bind(n.mediaDevices);if(n.mediaDevices.getUserMedia=function(n){return"object"==typeof n&&"object"==typeof n.audio&&(e((n=JSON.parse(JSON.stringify(n))).audio,"autoGainControl","mozAutoGainControl"),e(n.audio,"noiseSuppression","mozNoiseSuppression")),t(n)},r&&r.prototype.getSettings){let t=r.prototype.getSettings;r.prototype.getSettings=function(){let n=t.apply(this,arguments);return e(n,"mozAutoGainControl","autoGainControl"),e(n,"mozNoiseSuppression","noiseSuppression"),n}}if(r&&r.prototype.applyConstraints){let t=r.prototype.applyConstraints;r.prototype.applyConstraints=function(n){return"audio"===this.kind&&"object"==typeof n&&(e(n=JSON.parse(JSON.stringify(n)),"autoGainControl","mozAutoGainControl"),e(n,"noiseSuppression","mozNoiseSuppression")),t.apply(this,[n])}}}}"use strict";function D(e,t){e.navigator.mediaDevices&&"getDisplayMedia"in e.navigator.mediaDevices||e.navigator.mediaDevices&&(e.navigator.mediaDevices.getDisplayMedia=function(n){if(!(n&&n.video)){let e=new DOMException("getDisplayMedia without video constraints is undefined");return e.name="NotFoundError",e.code=8,Promise.reject(e)}return!0===n.video?n.video={mediaSource:t}:n.video.mediaSource=t,e.navigator.mediaDevices.getUserMedia(n)})}"use strict";function I(e){"object"==typeof e&&e.RTCTrackEvent&&"receiver"in e.RTCTrackEvent.prototype&&!("transceiver"in e.RTCTrackEvent.prototype)&&Object.defineProperty(e.RTCTrackEvent.prototype,"transceiver",{get(){return{receiver:this.receiver}}})}function M(e,t){if("object"!=typeof e||!(e.RTCPeerConnection||e.mozRTCPeerConnection))return;!e.RTCPeerConnection&&e.mozRTCPeerConnection&&(e.RTCPeerConnection=e.mozRTCPeerConnection),t.version<53&&["setLocalDescription","setRemoteDescription","addIceCandidate"].forEach(function(t){let n=e.RTCPeerConnection.prototype[t];e.RTCPeerConnection.prototype[t]=({[t](){return arguments[0]=new("addIceCandidate"===t?e.RTCIceCandidate:e.RTCSessionDescription)(arguments[0]),n.apply(this,arguments)}})[t]});let n={inboundrtp:"inbound-rtp",outboundrtp:"outbound-rtp",candidatepair:"candidate-pair",localcandidate:"local-candidate",remotecandidate:"remote-candidate"},r=e.RTCPeerConnection.prototype.getStats;e.RTCPeerConnection.prototype.getStats=function(){let[e,i,s]=arguments;return r.apply(this,[e||null]).then(e=>{if(t.version<53&&!i)try{e.forEach(e=>{e.type=n[e.type]||e.type})}catch(t){if("TypeError"!==t.name)throw t;e.forEach((t,r)=>{e.set(r,Object.assign({},t,{type:n[t.type]||t.type}))})}return e}).then(i,s)}}function O(e){if(!("object"==typeof e&&e.RTCPeerConnection&&e.RTCRtpSender)||e.RTCRtpSender&&"getStats"in e.RTCRtpSender.prototype)return;let t=e.RTCPeerConnection.prototype.getSenders;t&&(e.RTCPeerConnection.prototype.getSenders=function(){let e=t.apply(this,[]);return e.forEach(e=>e._pc=this),e});let n=e.RTCPeerConnection.prototype.addTrack;n&&(e.RTCPeerConnection.prototype.addTrack=function(){let e=n.apply(this,arguments);return e._pc=this,e}),e.RTCRtpSender.prototype.getStats=function(){return this.track?this._pc.getStats(this.track):Promise.resolve(new Map)}}function L(e){if(!("object"==typeof e&&e.RTCPeerConnection&&e.RTCRtpSender)||e.RTCRtpSender&&"getStats"in e.RTCRtpReceiver.prototype)return;let t=e.RTCPeerConnection.prototype.getReceivers;t&&(e.RTCPeerConnection.prototype.getReceivers=function(){let e=t.apply(this,[]);return e.forEach(e=>e._pc=this),e}),l(e,"track",e=>(e.receiver._pc=e.srcElement,e)),e.RTCRtpReceiver.prototype.getStats=function(){return this._pc.getStats(this.track)}}function A(e){!e.RTCPeerConnection||"removeStream"in e.RTCPeerConnection.prototype||(e.RTCPeerConnection.prototype.removeStream=function(e){m("removeStream","removeTrack"),this.getSenders().forEach(t=>{t.track&&e.getTracks().includes(t.track)&&this.removeTrack(t)})})}function j(e){e.DataChannel&&!e.RTCDataChannel&&(e.RTCDataChannel=e.DataChannel)}function B(e){if(!("object"==typeof e&&e.RTCPeerConnection))return;let t=e.RTCPeerConnection.prototype.addTransceiver;t&&(e.RTCPeerConnection.prototype.addTransceiver=function(){this.setParametersPromises=[];let e=arguments[1]&&arguments[1].sendEncodings;void 0===e&&(e=[]);let n=(e=[...e]).length>0;n&&e.forEach(e=>{if("rid"in e&&!/^[a-z0-9]{0,16}$/i.test(e.rid))throw TypeError("Invalid RID value provided.");if("scaleResolutionDownBy"in e&&!(parseFloat(e.scaleResolutionDownBy)>=1))throw RangeError("scale_resolution_down_by must be >= 1.0");if("maxFramerate"in e&&!(parseFloat(e.maxFramerate)>=0))throw RangeError("max_framerate must be >= 0.0")});let r=t.apply(this,arguments);if(n){let{sender:t}=r,n=t.getParameters();"encodings"in n&&(1!==n.encodings.length||0!==Object.keys(n.encodings[0]).length)||(n.encodings=e,t.sendEncodings=e,this.setParametersPromises.push(t.setParameters(n).then(()=>{delete t.sendEncodings}).catch(()=>{delete t.sendEncodings})))}return r})}function U(e){if(!("object"==typeof e&&e.RTCRtpSender))return;let t=e.RTCRtpSender.prototype.getParameters;t&&(e.RTCRtpSender.prototype.getParameters=function(){let e=t.apply(this,arguments);return"encodings"in e||(e.encodings=[].concat(this.sendEncodings||[{}])),e})}function F(e){if(!("object"==typeof e&&e.RTCPeerConnection))return;let t=e.RTCPeerConnection.prototype.createOffer;e.RTCPeerConnection.prototype.createOffer=function(){return this.setParametersPromises&&this.setParametersPromises.length?Promise.all(this.setParametersPromises).then(()=>t.apply(this,arguments)).finally(()=>{this.setParametersPromises=[]}):t.apply(this,arguments)}}function N(e){if(!("object"==typeof e&&e.RTCPeerConnection))return;let t=e.RTCPeerConnection.prototype.createAnswer;e.RTCPeerConnection.prototype.createAnswer=function(){return this.setParametersPromises&&this.setParametersPromises.length?Promise.all(this.setParametersPromises).then(()=>t.apply(this,arguments)).finally(()=>{this.setParametersPromises=[]}):t.apply(this,arguments)}}"use strict";e(E,"shimOnTrack",()=>I),e(E,"shimPeerConnection",()=>M),e(E,"shimSenderGetStats",()=>O),e(E,"shimReceiverGetStats",()=>L),e(E,"shimRemoveStream",()=>A),e(E,"shimRTCDataChannel",()=>j),e(E,"shimAddTransceiver",()=>B),e(E,"shimGetParameters",()=>U),e(E,"shimCreateOffer",()=>F),e(E,"shimCreateAnswer",()=>N),e(E,"shimGetUserMedia",()=>x),e(E,"shimGetDisplayMedia",()=>D);var z={};function $(e){if("object"==typeof e&&e.RTCPeerConnection){if("getLocalStreams"in e.RTCPeerConnection.prototype||(e.RTCPeerConnection.prototype.getLocalStreams=function(){return this._localStreams||(this._localStreams=[]),this._localStreams}),!("addStream"in e.RTCPeerConnection.prototype)){let t=e.RTCPeerConnection.prototype.addTrack;e.RTCPeerConnection.prototype.addStream=function(e){this._localStreams||(this._localStreams=[]),this._localStreams.includes(e)||this._localStreams.push(e),e.getAudioTracks().forEach(n=>t.call(this,n,e)),e.getVideoTracks().forEach(n=>t.call(this,n,e))},e.RTCPeerConnection.prototype.addTrack=function(e,...n){return n&&n.forEach(e=>{this._localStreams?this._localStreams.includes(e)||this._localStreams.push(e):this._localStreams=[e]}),t.apply(this,arguments)}}"removeStream"in e.RTCPeerConnection.prototype||(e.RTCPeerConnection.prototype.removeStream=function(e){this._localStreams||(this._localStreams=[]);let t=this._localStreams.indexOf(e);if(-1===t)return;this._localStreams.splice(t,1);let n=e.getTracks();this.getSenders().forEach(e=>{n.includes(e.track)&&this.removeTrack(e)})})}}function V(e){if("object"==typeof e&&e.RTCPeerConnection&&("getRemoteStreams"in e.RTCPeerConnection.prototype||(e.RTCPeerConnection.prototype.getRemoteStreams=function(){return this._remoteStreams?this._remoteStreams:[]}),!("onaddstream"in e.RTCPeerConnection.prototype))){Object.defineProperty(e.RTCPeerConnection.prototype,"onaddstream",{get(){return this._onaddstream},set(e){this._onaddstream&&(this.removeEventListener("addstream",this._onaddstream),this.removeEventListener("track",this._onaddstreampoly)),this.addEventListener("addstream",this._onaddstream=e),this.addEventListener("track",this._onaddstreampoly=e=>{e.streams.forEach(e=>{if(this._remoteStreams||(this._remoteStreams=[]),this._remoteStreams.includes(e))return;this._remoteStreams.push(e);let t=new Event("addstream");t.stream=e,this.dispatchEvent(t)})})}});let t=e.RTCPeerConnection.prototype.setRemoteDescription;e.RTCPeerConnection.prototype.setRemoteDescription=function(){let e=this;return this._onaddstreampoly||this.addEventListener("track",this._onaddstreampoly=function(t){t.streams.forEach(t=>{if(e._remoteStreams||(e._remoteStreams=[]),e._remoteStreams.indexOf(t)>=0)return;e._remoteStreams.push(t);let n=new Event("addstream");n.stream=t,e.dispatchEvent(n)})}),t.apply(e,arguments)}}}function G(e){if("object"!=typeof e||!e.RTCPeerConnection)return;let t=e.RTCPeerConnection.prototype,n=t.createOffer,r=t.createAnswer,i=t.setLocalDescription,s=t.setRemoteDescription,o=t.addIceCandidate;t.createOffer=function(e,t){let r=arguments.length>=2?arguments[2]:arguments[0],i=n.apply(this,[r]);return t?(i.then(e,t),Promise.resolve()):i},t.createAnswer=function(e,t){let n=arguments.length>=2?arguments[2]:arguments[0],i=r.apply(this,[n]);return t?(i.then(e,t),Promise.resolve()):i};let a=function(e,t,n){let r=i.apply(this,[e]);return n?(r.then(t,n),Promise.resolve()):r};t.setLocalDescription=a,t.setRemoteDescription=a=function(e,t,n){let r=s.apply(this,[e]);return n?(r.then(t,n),Promise.resolve()):r},t.addIceCandidate=function(e,t,n){let r=o.apply(this,[e]);return n?(r.then(t,n),Promise.resolve()):r}}function J(e){let t=e&&e.navigator;if(t.mediaDevices&&t.mediaDevices.getUserMedia){let e=t.mediaDevices,n=e.getUserMedia.bind(e);t.mediaDevices.getUserMedia=e=>n(W(e))}!t.getUserMedia&&t.mediaDevices&&t.mediaDevices.getUserMedia&&(t.getUserMedia=(function(e,n,r){t.mediaDevices.getUserMedia(e).then(n,r)}).bind(t))}function W(e){return e&&void 0!==e.video?Object.assign({},e,{video:function e(t){return _(t)?Object.keys(t).reduce(function(n,r){let i=_(t[r]),s=i?e(t[r]):t[r],o=i&&!Object.keys(s).length;return void 0===s||o?n:Object.assign(n,{[r]:s})},{}):t}(e.video)}):e}function Y(e){if(!e.RTCPeerConnection)return;let t=e.RTCPeerConnection;e.RTCPeerConnection=function(e,n){if(e&&e.iceServers){let t=[];for(let n=0;n<e.iceServers.length;n++){let r=e.iceServers[n];void 0===r.urls&&r.url?(m("RTCIceServer.url","RTCIceServer.urls"),(r=JSON.parse(JSON.stringify(r))).urls=r.url,delete r.url,t.push(r)):t.push(e.iceServers[n])}e.iceServers=t}return new t(e,n)},e.RTCPeerConnection.prototype=t.prototype,"generateCertificate"in t&&Object.defineProperty(e.RTCPeerConnection,"generateCertificate",{get:()=>t.generateCertificate})}function H(e){"object"==typeof e&&e.RTCTrackEvent&&"receiver"in e.RTCTrackEvent.prototype&&!("transceiver"in e.RTCTrackEvent.prototype)&&Object.defineProperty(e.RTCTrackEvent.prototype,"transceiver",{get(){return{receiver:this.receiver}}})}function K(e){let t=e.RTCPeerConnection.prototype.createOffer;e.RTCPeerConnection.prototype.createOffer=function(e){if(e){void 0!==e.offerToReceiveAudio&&(e.offerToReceiveAudio=!!e.offerToReceiveAudio);let t=this.getTransceivers().find(e=>"audio"===e.receiver.track.kind);!1===e.offerToReceiveAudio&&t?"sendrecv"===t.direction?t.setDirection?t.setDirection("sendonly"):t.direction="sendonly":"recvonly"===t.direction&&(t.setDirection?t.setDirection("inactive"):t.direction="inactive"):!0!==e.offerToReceiveAudio||t||this.addTransceiver("audio",{direction:"recvonly"}),void 0!==e.offerToReceiveVideo&&(e.offerToReceiveVideo=!!e.offerToReceiveVideo);let n=this.getTransceivers().find(e=>"video"===e.receiver.track.kind);!1===e.offerToReceiveVideo&&n?"sendrecv"===n.direction?n.setDirection?n.setDirection("sendonly"):n.direction="sendonly":"recvonly"===n.direction&&(n.setDirection?n.setDirection("inactive"):n.direction="inactive"):!0!==e.offerToReceiveVideo||n||this.addTransceiver("video",{direction:"recvonly"})}return t.apply(this,arguments)}}function X(e){"object"!=typeof e||e.AudioContext||(e.AudioContext=e.webkitAudioContext)}e(z,"shimLocalStreamsAPI",()=>$),e(z,"shimRemoteStreamsAPI",()=>V),e(z,"shimCallbacksAPI",()=>G),e(z,"shimGetUserMedia",()=>J),e(z,"shimConstraints",()=>W),e(z,"shimRTCIceServerUrls",()=>Y),e(z,"shimTrackEventTransceiver",()=>H),e(z,"shimCreateOfferLegacy",()=>K),e(z,"shimAudioContext",()=>X);var Q={};"use strict";e(Q,"shimRTCIceCandidate",()=>ee),e(Q,"shimRTCIceCandidateRelayProtocol",()=>et),e(Q,"shimMaxMessageSize",()=>en),e(Q,"shimSendThrowTypeError",()=>er),e(Q,"shimConnectionState",()=>ei),e(Q,"removeExtmapAllowMixed",()=>es),e(Q,"shimAddIceCandidateNullOrEmpty",()=>eo),e(Q,"shimParameterlessSetLocalDescription",()=>ea);var q={};"use strict";let Z={};function ee(e){if(!e.RTCIceCandidate||e.RTCIceCandidate&&"foundation"in e.RTCIceCandidate.prototype)return;let n=e.RTCIceCandidate;e.RTCIceCandidate=function(e){if("object"==typeof e&&e.candidate&&0===e.candidate.indexOf("a=")&&((e=JSON.parse(JSON.stringify(e))).candidate=e.candidate.substring(2)),e.candidate&&e.candidate.length){let r=new n(e),i=t(q).parseCandidate(e.candidate);for(let e in i)e in r||Object.defineProperty(r,e,{value:i[e]});return r.toJSON=function(){return{candidate:r.candidate,sdpMid:r.sdpMid,sdpMLineIndex:r.sdpMLineIndex,usernameFragment:r.usernameFragment}},r}return new n(e)},e.RTCIceCandidate.prototype=n.prototype,l(e,"icecandidate",t=>(t.candidate&&Object.defineProperty(t,"candidate",{value:new e.RTCIceCandidate(t.candidate),writable:"false"}),t))}function et(e){!e.RTCIceCandidate||e.RTCIceCandidate&&"relayProtocol"in e.RTCIceCandidate.prototype||l(e,"icecandidate",e=>{if(e.candidate){let n=t(q).parseCandidate(e.candidate.candidate);"relay"===n.type&&(e.candidate.relayProtocol=({0:"tls",1:"tcp",2:"udp"})[n.priority>>24])}return e})}function en(e,n){if(!e.RTCPeerConnection)return;"sctp"in e.RTCPeerConnection.prototype||Object.defineProperty(e.RTCPeerConnection.prototype,"sctp",{get(){return void 0===this._sctp?null:this._sctp}});let r=function(e){if(!e||!e.sdp)return!1;let n=t(q).splitSections(e.sdp);return n.shift(),n.some(e=>{let n=t(q).parseMLine(e);return n&&"application"===n.kind&&-1!==n.protocol.indexOf("SCTP")})},i=function(e){let t=e.sdp.match(/mozilla...THIS_IS_SDPARTA-(\d+)/);if(null===t||t.length<2)return -1;let n=parseInt(t[1],10);return n!=n?-1:n},s=function(e){let t=65536;return"firefox"===n.browser&&(t=n.version<57?-1===e?16384:0x7ffffff5:n.version<60?57===n.version?65535:65536:0x7ffffff5),t},o=function(e,r){let i=65536;"firefox"===n.browser&&57===n.version&&(i=65535);let s=t(q).matchPrefix(e.sdp,"a=max-message-size:");return s.length>0?i=parseInt(s[0].substring(19),10):"firefox"===n.browser&&-1!==r&&(i=0x7ffffff5),i},a=e.RTCPeerConnection.prototype.setRemoteDescription;e.RTCPeerConnection.prototype.setRemoteDescription=function(){if(this._sctp=null,"chrome"===n.browser&&n.version>=76){let{sdpSemantics:e}=this.getConfiguration();"plan-b"===e&&Object.defineProperty(this,"sctp",{get(){return void 0===this._sctp?null:this._sctp},enumerable:!0,configurable:!0})}if(r(arguments[0])){let e,t=i(arguments[0]),n=s(t),r=o(arguments[0],t);e=0===n&&0===r?Number.POSITIVE_INFINITY:0===n||0===r?Math.max(n,r):Math.min(n,r);let a={};Object.defineProperty(a,"maxMessageSize",{get:()=>e}),this._sctp=a}return a.apply(this,arguments)}}function er(e){if(!(e.RTCPeerConnection&&"createDataChannel"in e.RTCPeerConnection.prototype))return;function t(e,t){let n=e.send;e.send=function(){let r=arguments[0],i=r.length||r.size||r.byteLength;if("open"===e.readyState&&t.sctp&&i>t.sctp.maxMessageSize)throw TypeError("Message too large (can send a maximum of "+t.sctp.maxMessageSize+" bytes)");return n.apply(e,arguments)}}let n=e.RTCPeerConnection.prototype.createDataChannel;e.RTCPeerConnection.prototype.createDataChannel=function(){let e=n.apply(this,arguments);return t(e,this),e},l(e,"datachannel",e=>(t(e.channel,e.target),e))}function ei(e){if(!e.RTCPeerConnection||"connectionState"in e.RTCPeerConnection.prototype)return;let t=e.RTCPeerConnection.prototype;Object.defineProperty(t,"connectionState",{get(){return({completed:"connected",checking:"connecting"})[this.iceConnectionState]||this.iceConnectionState},enumerable:!0,configurable:!0}),Object.defineProperty(t,"onconnectionstatechange",{get(){return this._onconnectionstatechange||null},set(e){this._onconnectionstatechange&&(this.removeEventListener("connectionstatechange",this._onconnectionstatechange),delete this._onconnectionstatechange),e&&this.addEventListener("connectionstatechange",this._onconnectionstatechange=e)},enumerable:!0,configurable:!0}),["setLocalDescription","setRemoteDescription"].forEach(e=>{let n=t[e];t[e]=function(){return this._connectionstatechangepoly||(this._connectionstatechangepoly=e=>{let t=e.target;if(t._lastConnectionState!==t.connectionState){t._lastConnectionState=t.connectionState;let n=new Event("connectionstatechange",e);t.dispatchEvent(n)}return e},this.addEventListener("iceconnectionstatechange",this._connectionstatechangepoly)),n.apply(this,arguments)}})}function es(e,t){if(!e.RTCPeerConnection||"chrome"===t.browser&&t.version>=71||"safari"===t.browser&&t.version>=605)return;let n=e.RTCPeerConnection.prototype.setRemoteDescription;e.RTCPeerConnection.prototype.setRemoteDescription=function(t){if(t&&t.sdp&&-1!==t.sdp.indexOf("\na=extmap-allow-mixed")){let n=t.sdp.split("\n").filter(e=>"a=extmap-allow-mixed"!==e.trim()).join("\n");e.RTCSessionDescription&&t instanceof e.RTCSessionDescription?arguments[0]=new e.RTCSessionDescription({type:t.type,sdp:n}):t.sdp=n}return n.apply(this,arguments)}}function eo(e,t){if(!(e.RTCPeerConnection&&e.RTCPeerConnection.prototype))return;let n=e.RTCPeerConnection.prototype.addIceCandidate;n&&0!==n.length&&(e.RTCPeerConnection.prototype.addIceCandidate=function(){return arguments[0]?("chrome"===t.browser&&t.version<78||"firefox"===t.browser&&t.version<68||"safari"===t.browser)&&arguments[0]&&""===arguments[0].candidate?Promise.resolve():n.apply(this,arguments):(arguments[1]&&arguments[1].apply(null),Promise.resolve())})}function ea(e,t){if(!(e.RTCPeerConnection&&e.RTCPeerConnection.prototype))return;let n=e.RTCPeerConnection.prototype.setLocalDescription;n&&0!==n.length&&(e.RTCPeerConnection.prototype.setLocalDescription=function(){let e=arguments[0]||{};if("object"!=typeof e||e.type&&e.sdp)return n.apply(this,arguments);if(!(e={type:e.type,sdp:e.sdp}).type)switch(this.signalingState){case"stable":case"have-local-offer":case"have-remote-pranswer":e.type="offer";break;default:e.type="answer"}return e.sdp||"offer"!==e.type&&"answer"!==e.type?n.apply(this,[e]):("offer"===e.type?this.createOffer:this.createAnswer).apply(this).then(e=>n.apply(this,[e]))})}"use strict";Z.generateIdentifier=function(){return Math.random().toString(36).substring(2,12)},Z.localCName=Z.generateIdentifier(),Z.splitLines=function(e){return e.trim().split("\n").map(e=>e.trim())},Z.splitSections=function(e){return e.split("\nm=").map((e,t)=>(t>0?"m="+e:e).trim()+"\r\n")},Z.getDescription=function(e){let t=Z.splitSections(e);return t&&t[0]},Z.getMediaSections=function(e){let t=Z.splitSections(e);return t.shift(),t},Z.matchPrefix=function(e,t){return Z.splitLines(e).filter(e=>0===e.indexOf(t))},Z.parseCandidate=function(e){let t,n={foundation:(t=0===e.indexOf("a=candidate:")?e.substring(12).split(" "):e.substring(10).split(" "))[0],component:{1:"rtp",2:"rtcp"}[t[1]]||t[1],protocol:t[2].toLowerCase(),priority:parseInt(t[3],10),ip:t[4],address:t[4],port:parseInt(t[5],10),type:t[7]};for(let e=8;e<t.length;e+=2)switch(t[e]){case"raddr":n.relatedAddress=t[e+1];break;case"rport":n.relatedPort=parseInt(t[e+1],10);break;case"tcptype":n.tcpType=t[e+1];break;case"ufrag":n.ufrag=t[e+1],n.usernameFragment=t[e+1];break;default:void 0===n[t[e]]&&(n[t[e]]=t[e+1])}return n},Z.writeCandidate=function(e){let t=[];t.push(e.foundation);let n=e.component;"rtp"===n?t.push(1):"rtcp"===n?t.push(2):t.push(n),t.push(e.protocol.toUpperCase()),t.push(e.priority),t.push(e.address||e.ip),t.push(e.port);let r=e.type;return t.push("typ"),t.push(r),"host"!==r&&e.relatedAddress&&e.relatedPort&&(t.push("raddr"),t.push(e.relatedAddress),t.push("rport"),t.push(e.relatedPort)),e.tcpType&&"tcp"===e.protocol.toLowerCase()&&(t.push("tcptype"),t.push(e.tcpType)),(e.usernameFragment||e.ufrag)&&(t.push("ufrag"),t.push(e.usernameFragment||e.ufrag)),"candidate:"+t.join(" ")},Z.parseIceOptions=function(e){return e.substring(14).split(" ")},Z.parseRtpMap=function(e){let t=e.substring(9).split(" "),n={payloadType:parseInt(t.shift(),10)};return n.name=(t=t[0].split("/"))[0],n.clockRate=parseInt(t[1],10),n.channels=3===t.length?parseInt(t[2],10):1,n.numChannels=n.channels,n},Z.writeRtpMap=function(e){let t=e.payloadType;void 0!==e.preferredPayloadType&&(t=e.preferredPayloadType);let n=e.channels||e.numChannels||1;return"a=rtpmap:"+t+" "+e.name+"/"+e.clockRate+(1!==n?"/"+n:"")+"\r\n"},Z.parseExtmap=function(e){let t=e.substring(9).split(" ");return{id:parseInt(t[0],10),direction:t[0].indexOf("/")>0?t[0].split("/")[1]:"sendrecv",uri:t[1],attributes:t.slice(2).join(" ")}},Z.writeExtmap=function(e){return"a=extmap:"+(e.id||e.preferredId)+(e.direction&&"sendrecv"!==e.direction?"/"+e.direction:"")+" "+e.uri+(e.attributes?" "+e.attributes:"")+"\r\n"},Z.parseFmtp=function(e){let t,n={},r=e.substring(e.indexOf(" ")+1).split(";");for(let e=0;e<r.length;e++)n[(t=r[e].trim().split("="))[0].trim()]=t[1];return n},Z.writeFmtp=function(e){let t="",n=e.payloadType;if(void 0!==e.preferredPayloadType&&(n=e.preferredPayloadType),e.parameters&&Object.keys(e.parameters).length){let r=[];Object.keys(e.parameters).forEach(t=>{void 0!==e.parameters[t]?r.push(t+"="+e.parameters[t]):r.push(t)}),t+="a=fmtp:"+n+" "+r.join(";")+"\r\n"}return t},Z.parseRtcpFb=function(e){let t=e.substring(e.indexOf(" ")+1).split(" ");return{type:t.shift(),parameter:t.join(" ")}},Z.writeRtcpFb=function(e){let t="",n=e.payloadType;return void 0!==e.preferredPayloadType&&(n=e.preferredPayloadType),e.rtcpFeedback&&e.rtcpFeedback.length&&e.rtcpFeedback.forEach(e=>{t+="a=rtcp-fb:"+n+" "+e.type+(e.parameter&&e.parameter.length?" "+e.parameter:"")+"\r\n"}),t},Z.parseSsrcMedia=function(e){let t=e.indexOf(" "),n={ssrc:parseInt(e.substring(7,t),10)},r=e.indexOf(":",t);return r>-1?(n.attribute=e.substring(t+1,r),n.value=e.substring(r+1)):n.attribute=e.substring(t+1),n},Z.parseSsrcGroup=function(e){let t=e.substring(13).split(" ");return{semantics:t.shift(),ssrcs:t.map(e=>parseInt(e,10))}},Z.getMid=function(e){let t=Z.matchPrefix(e,"a=mid:")[0];if(t)return t.substring(6)},Z.parseFingerprint=function(e){let t=e.substring(14).split(" ");return{algorithm:t[0].toLowerCase(),value:t[1].toUpperCase()}},Z.getDtlsParameters=function(e,t){return{role:"auto",fingerprints:Z.matchPrefix(e+t,"a=fingerprint:").map(Z.parseFingerprint)}},Z.writeDtlsParameters=function(e,t){let n="a=setup:"+t+"\r\n";return e.fingerprints.forEach(e=>{n+="a=fingerprint:"+e.algorithm+" "+e.value+"\r\n"}),n},Z.parseCryptoLine=function(e){let t=e.substring(9).split(" ");return{tag:parseInt(t[0],10),cryptoSuite:t[1],keyParams:t[2],sessionParams:t.slice(3)}},Z.writeCryptoLine=function(e){return"a=crypto:"+e.tag+" "+e.cryptoSuite+" "+("object"==typeof e.keyParams?Z.writeCryptoKeyParams(e.keyParams):e.keyParams)+(e.sessionParams?" "+e.sessionParams.join(" "):"")+"\r\n"},Z.parseCryptoKeyParams=function(e){if(0!==e.indexOf("inline:"))return null;let t=e.substring(7).split("|");return{keyMethod:"inline",keySalt:t[0],lifeTime:t[1],mkiValue:t[2]?t[2].split(":")[0]:void 0,mkiLength:t[2]?t[2].split(":")[1]:void 0}},Z.writeCryptoKeyParams=function(e){return e.keyMethod+":"+e.keySalt+(e.lifeTime?"|"+e.lifeTime:"")+(e.mkiValue&&e.mkiLength?"|"+e.mkiValue+":"+e.mkiLength:"")},Z.getCryptoParameters=function(e,t){return Z.matchPrefix(e+t,"a=crypto:").map(Z.parseCryptoLine)},Z.getIceParameters=function(e,t){let n=Z.matchPrefix(e+t,"a=ice-ufrag:")[0],r=Z.matchPrefix(e+t,"a=ice-pwd:")[0];return n&&r?{usernameFragment:n.substring(12),password:r.substring(10)}:null},Z.writeIceParameters=function(e){let t="a=ice-ufrag:"+e.usernameFragment+"\r\na=ice-pwd:"+e.password+"\r\n";return e.iceLite&&(t+="a=ice-lite\r\n"),t},Z.parseRtpParameters=function(e){let t={codecs:[],headerExtensions:[],fecMechanisms:[],rtcp:[]},n=Z.splitLines(e)[0].split(" ");t.profile=n[2];for(let r=3;r<n.length;r++){let i=n[r],s=Z.matchPrefix(e,"a=rtpmap:"+i+" ")[0];if(s){let n=Z.parseRtpMap(s),r=Z.matchPrefix(e,"a=fmtp:"+i+" ");switch(n.parameters=r.length?Z.parseFmtp(r[0]):{},n.rtcpFeedback=Z.matchPrefix(e,"a=rtcp-fb:"+i+" ").map(Z.parseRtcpFb),t.codecs.push(n),n.name.toUpperCase()){case"RED":case"ULPFEC":t.fecMechanisms.push(n.name.toUpperCase())}}}Z.matchPrefix(e,"a=extmap:").forEach(e=>{t.headerExtensions.push(Z.parseExtmap(e))});let r=Z.matchPrefix(e,"a=rtcp-fb:* ").map(Z.parseRtcpFb);return t.codecs.forEach(e=>{r.forEach(t=>{e.rtcpFeedback.find(e=>e.type===t.type&&e.parameter===t.parameter)||e.rtcpFeedback.push(t)})}),t},Z.writeRtpDescription=function(e,t){let n="";n+="m="+e+" ",n+=t.codecs.length>0?"9":"0",n+=" "+(t.profile||"UDP/TLS/RTP/SAVPF")+" ",n+=t.codecs.map(e=>void 0!==e.preferredPayloadType?e.preferredPayloadType:e.payloadType).join(" ")+"\r\n",n+="c=IN IP4 0.0.0.0\r\n",n+="a=rtcp:9 IN IP4 0.0.0.0\r\n",t.codecs.forEach(e=>{n+=Z.writeRtpMap(e),n+=Z.writeFmtp(e),n+=Z.writeRtcpFb(e)});let r=0;return t.codecs.forEach(e=>{e.maxptime>r&&(r=e.maxptime)}),r>0&&(n+="a=maxptime:"+r+"\r\n"),t.headerExtensions&&t.headerExtensions.forEach(e=>{n+=Z.writeExtmap(e)}),n},Z.parseRtpEncodingParameters=function(e){let t,n=[],r=Z.parseRtpParameters(e),i=-1!==r.fecMechanisms.indexOf("RED"),s=-1!==r.fecMechanisms.indexOf("ULPFEC"),o=Z.matchPrefix(e,"a=ssrc:").map(e=>Z.parseSsrcMedia(e)).filter(e=>"cname"===e.attribute),a=o.length>0&&o[0].ssrc,c=Z.matchPrefix(e,"a=ssrc-group:FID").map(e=>e.substring(17).split(" ").map(e=>parseInt(e,10)));c.length>0&&c[0].length>1&&c[0][0]===a&&(t=c[0][1]),r.codecs.forEach(e=>{if("RTX"===e.name.toUpperCase()&&e.parameters.apt){let r={ssrc:a,codecPayloadType:parseInt(e.parameters.apt,10)};a&&t&&(r.rtx={ssrc:t}),n.push(r),i&&((r=JSON.parse(JSON.stringify(r))).fec={ssrc:a,mechanism:s?"red+ulpfec":"red"},n.push(r))}}),0===n.length&&a&&n.push({ssrc:a});let p=Z.matchPrefix(e,"b=");return p.length&&(p=0===p[0].indexOf("b=TIAS:")?parseInt(p[0].substring(7),10):0===p[0].indexOf("b=AS:")?950*parseInt(p[0].substring(5),10)-16e3:void 0,n.forEach(e=>{e.maxBitrate=p})),n},Z.parseRtcpParameters=function(e){let t={},n=Z.matchPrefix(e,"a=ssrc:").map(e=>Z.parseSsrcMedia(e)).filter(e=>"cname"===e.attribute)[0];n&&(t.cname=n.value,t.ssrc=n.ssrc);let r=Z.matchPrefix(e,"a=rtcp-rsize");return t.reducedSize=r.length>0,t.compound=0===r.length,t.mux=Z.matchPrefix(e,"a=rtcp-mux").length>0,t},Z.writeRtcpParameters=function(e){let t="";return e.reducedSize&&(t+="a=rtcp-rsize\r\n"),e.mux&&(t+="a=rtcp-mux\r\n"),void 0!==e.ssrc&&e.cname&&(t+="a=ssrc:"+e.ssrc+" cname:"+e.cname+"\r\n"),t},Z.parseMsid=function(e){let t,n=Z.matchPrefix(e,"a=msid:");if(1===n.length)return{stream:(t=n[0].substring(7).split(" "))[0],track:t[1]};let r=Z.matchPrefix(e,"a=ssrc:").map(e=>Z.parseSsrcMedia(e)).filter(e=>"msid"===e.attribute);if(r.length>0)return{stream:(t=r[0].value.split(" "))[0],track:t[1]}},Z.parseSctpDescription=function(e){let t,n=Z.parseMLine(e),r=Z.matchPrefix(e,"a=max-message-size:");r.length>0&&(t=parseInt(r[0].substring(19),10)),isNaN(t)&&(t=65536);let i=Z.matchPrefix(e,"a=sctp-port:");if(i.length>0)return{port:parseInt(i[0].substring(12),10),protocol:n.fmt,maxMessageSize:t};let s=Z.matchPrefix(e,"a=sctpmap:");if(s.length>0){let e=s[0].substring(10).split(" ");return{port:parseInt(e[0],10),protocol:e[1],maxMessageSize:t}}},Z.writeSctpDescription=function(e,t){let n=[];return n="DTLS/SCTP"!==e.protocol?["m="+e.kind+" 9 "+e.protocol+" "+t.protocol+"\r\n","c=IN IP4 0.0.0.0\r\n","a=sctp-port:"+t.port+"\r\n"]:["m="+e.kind+" 9 "+e.protocol+" "+t.port+"\r\n","c=IN IP4 0.0.0.0\r\n","a=sctpmap:"+t.port+" "+t.protocol+" 65535\r\n"],void 0!==t.maxMessageSize&&n.push("a=max-message-size:"+t.maxMessageSize+"\r\n"),n.join("")},Z.generateSessionId=function(){return Math.random().toString().substr(2,22)},Z.writeSessionBoilerplate=function(e,t,n){return"v=0\r\no="+(n||"thisisadapterortc")+" "+(e||Z.generateSessionId())+" "+(void 0!==t?t:2)+" IN IP4 127.0.0.1\r\ns=-\r\nt=0 0\r\n"},Z.getDirection=function(e,t){let n=Z.splitLines(e);for(let e=0;e<n.length;e++)switch(n[e]){case"a=sendrecv":case"a=sendonly":case"a=recvonly":case"a=inactive":return n[e].substring(2)}return t?Z.getDirection(t):"sendrecv"},Z.getKind=function(e){return Z.splitLines(e)[0].split(" ")[0].substring(2)},Z.isRejected=function(e){return"0"===e.split(" ",2)[1]},Z.parseMLine=function(e){let t=Z.splitLines(e)[0].substring(2).split(" ");return{kind:t[0],port:parseInt(t[1],10),protocol:t[2],fmt:t.slice(3).join(" ")}},Z.parseOLine=function(e){let t=Z.matchPrefix(e,"o=")[0].substring(2).split(" ");return{username:t[0],sessionId:t[1],sessionVersion:parseInt(t[2],10),netType:t[3],addressType:t[4],address:t[5]}},Z.isValidSDP=function(e){if("string"!=typeof e||0===e.length)return!1;let t=Z.splitLines(e);for(let e=0;e<t.length;e++)if(t[e].length<2||"="!==t[e].charAt(1))return!1;return!0},q=Z;let ec=function({window:e}={},t={shimChrome:!0,shimFirefox:!0,shimSafari:!0}){let n=function(e){let t={browser:null,version:null};if(void 0===e||!e.navigator||!e.navigator.userAgent)return t.browser="Not a browser.",t;let{navigator:n}=e;if(n.userAgentData&&n.userAgentData.brands){let e=n.userAgentData.brands.find(e=>"Chromium"===e.brand);if(e)return{browser:"chrome",version:parseInt(e.version,10)}}return n.mozGetUserMedia?(t.browser="firefox",t.version=d(n.userAgent,/Firefox\/(\d+)\./,1)):n.webkitGetUserMedia||!1===e.isSecureContext&&e.webkitRTCPeerConnection?(t.browser="chrome",t.version=d(n.userAgent,/Chrom(e|ium)\/(\d+)\./,2)):e.RTCPeerConnection&&n.userAgent.match(/AppleWebKit\/(\d+)\./)?(t.browser="safari",t.version=d(n.userAgent,/AppleWebKit\/(\d+)\./,1),t.supportsUnifiedPlan=e.RTCRtpTransceiver&&"currentDirection"in e.RTCRtpTransceiver.prototype):t.browser="Not a supported browser.",t}(e),r={browserDetails:n,commonShim:Q,extractVersion:d,disableLog:h,disableWarnings:u,sdp:q};switch(n.browser){case"chrome":if(!y||!y.shimPeerConnection||!t.shimChrome){f("Chrome shim is not included in this adapter release.");break}if(null===n.version){f("Chrome shim can not determine version, not shimming.");break}f("adapter.js shimming chrome."),r.browserShim=y,eo(e,n),ea(e,n),y.shimGetUserMedia(e,n),y.shimMediaStream(e,n),y.shimPeerConnection(e,n),y.shimOnTrack(e,n),y.shimAddTrackRemoveTrack(e,n),y.shimGetSendersWithDtmf(e,n),y.shimSenderReceiverGetStats(e,n),y.fixNegotiationNeeded(e,n),ee(e,n),et(e,n),ei(e,n),en(e,n),er(e,n),es(e,n);break;case"firefox":if(!E||!E.shimPeerConnection||!t.shimFirefox){f("Firefox shim is not included in this adapter release.");break}f("adapter.js shimming firefox."),r.browserShim=E,eo(e,n),ea(e,n),E.shimGetUserMedia(e,n),E.shimPeerConnection(e,n),E.shimOnTrack(e,n),E.shimRemoveStream(e,n),E.shimSenderGetStats(e,n),E.shimReceiverGetStats(e,n),E.shimRTCDataChannel(e,n),E.shimAddTransceiver(e,n),E.shimGetParameters(e,n),E.shimCreateOffer(e,n),E.shimCreateAnswer(e,n),ee(e,n),ei(e,n),en(e,n),er(e,n);break;case"safari":if(!z||!t.shimSafari){f("Safari shim is not included in this adapter release.");break}f("adapter.js shimming safari."),r.browserShim=z,eo(e,n),ea(e,n),z.shimRTCIceServerUrls(e,n),z.shimCreateOfferLegacy(e,n),z.shimCallbacksAPI(e,n),z.shimLocalStreamsAPI(e,n),z.shimRemoteStreamsAPI(e,n),z.shimTrackEventTransceiver(e,n),z.shimGetUserMedia(e,n),z.shimAudioContext(e,n),ee(e,n),et(e,n),en(e,n),er(e,n),es(e,n);break;default:f("Unsupported browser!")}return r}({window:"undefined"==typeof window?void 0:window}),ep=ec.default||ec,ed=new class{isWebRTCSupported(){return"undefined"!=typeof RTCPeerConnection}isBrowserSupported(){let e=this.getBrowser(),t=this.getVersion();return!!this.supportedBrowsers.includes(e)&&("chrome"===e?t>=this.minChromeVersion:"firefox"===e?t>=this.minFirefoxVersion:"safari"===e&&!this.isIOS&&t>=this.minSafariVersion)}getBrowser(){return ep.browserDetails.browser}getVersion(){return ep.browserDetails.version||0}isUnifiedPlanSupported(){let e,t=this.getBrowser(),n=ep.browserDetails.version||0;if("chrome"===t&&n<this.minChromeVersion)return!1;if("firefox"===t&&n>=this.minFirefoxVersion)return!0;if(!window.RTCRtpTransceiver||!("currentDirection"in RTCRtpTransceiver.prototype))return!1;let r=!1;try{(e=new RTCPeerConnection).addTransceiver("audio"),r=!0}catch(e){}finally{e&&e.close()}return r}toString(){return`Supports:
+    browser:${this.getBrowser()}
+    version:${this.getVersion()}
+    isIOS:${this.isIOS}
+    isWebRTCSupported:${this.isWebRTCSupported()}
+    isBrowserSupported:${this.isBrowserSupported()}
+    isUnifiedPlanSupported:${this.isUnifiedPlanSupported()}`}constructor(){this.isIOS="undefined"!=typeof navigator&&["iPad","iPhone","iPod"].includes(navigator.platform),this.supportedBrowsers=["firefox","chrome","safari"],this.minFirefoxVersion=59,this.minChromeVersion=72,this.minSafariVersion=605}},el=e=>!e||/^[A-Za-z0-9]+(?:[ _-][A-Za-z0-9]+)*$/.test(e),eh=()=>Math.random().toString(36).slice(2),eu={iceServers:[{urls:"stun:stun.l.google.com:19302"},{urls:["turn:eu-0.turn.peerjs.com:3478","turn:us-0.turn.peerjs.com:3478"],username:"peerjs",credential:"peerjsp"}],sdpSemantics:"unified-plan"},ef=new class extends n{noop(){}blobToArrayBuffer(e,t){let n=new FileReader;return n.onload=function(e){e.target&&t(e.target.result)},n.readAsArrayBuffer(e),n}binaryStringToArrayBuffer(e){let t=new Uint8Array(e.length);for(let n=0;n<e.length;n++)t[n]=255&e.charCodeAt(n);return t.buffer}isSecure(){return"https:"===location.protocol}constructor(...e){super(...e),this.CLOUD_HOST="0.peerjs.com",this.CLOUD_PORT=443,this.chunkedBrowsers={Chrome:1,chrome:1},this.defaultConfig=eu,this.browser=ed.getBrowser(),this.browserVersion=ed.getVersion(),this.pack=s,this.unpack=i,this.supports=function(){let e,t={browser:ed.isBrowserSupported(),webRTC:ed.isWebRTCSupported(),audioVideo:!1,data:!1,binaryBlob:!1,reliable:!1};if(!t.webRTC)return t;try{let n;e=new RTCPeerConnection(eu),t.audioVideo=!0;try{n=e.createDataChannel("_PEERJSTEST",{ordered:!0}),t.data=!0,t.reliable=!!n.ordered;try{n.binaryType="blob",t.binaryBlob=!ed.isIOS}catch(e){}}catch(e){}finally{n&&n.close()}}catch(e){}finally{e&&e.close()}return t}(),this.validateId=el,this.randomToken=eh}};"use strict";var em=new class{get logLevel(){return this._logLevel}set logLevel(e){this._logLevel=e}log(...e){this._logLevel>=3&&this._print(3,...e)}warn(...e){this._logLevel>=2&&this._print(2,...e)}error(...e){this._logLevel>=1&&this._print(1,...e)}setLogFunction(e){this._print=e}_print(e,...t){let n=["PeerJS: ",...t];for(let e in n)n[e]instanceof Error&&(n[e]="("+n[e].name+") "+n[e].message);e>=3?console.log(...n):e>=2?console.warn("WARNING",...n):e>=1&&console.error("ERROR",...n)}constructor(){this._logLevel=0}},e_={},eg=Object.prototype.hasOwnProperty,ey="~";function eC(){}function ev(e,t,n){this.fn=e,this.context=t,this.once=n||!1}function eb(e,t,n,r,i){if("function"!=typeof n)throw TypeError("The listener must be a function");var s=new ev(n,r||e,i),o=ey?ey+t:t;return e._events[o]?e._events[o].fn?e._events[o]=[e._events[o],s]:e._events[o].push(s):(e._events[o]=s,e._eventsCount++),e}function eT(e,t){0==--e._eventsCount?e._events=new eC:delete e._events[t]}function eS(){this._events=new eC,this._eventsCount=0}Object.create&&(eC.prototype=Object.create(null),new eC().__proto__||(ey=!1)),eS.prototype.eventNames=function(){var e,t,n=[];if(0===this._eventsCount)return n;for(t in e=this._events)eg.call(e,t)&&n.push(ey?t.slice(1):t);return Object.getOwnPropertySymbols?n.concat(Object.getOwnPropertySymbols(e)):n},eS.prototype.listeners=function(e){var t=ey?ey+e:e,n=this._events[t];if(!n)return[];if(n.fn)return[n.fn];for(var r=0,i=n.length,s=Array(i);r<i;r++)s[r]=n[r].fn;return s},eS.prototype.listenerCount=function(e){var t=ey?ey+e:e,n=this._events[t];return n?n.fn?1:n.length:0},eS.prototype.emit=function(e,t,n,r,i,s){var o=ey?ey+e:e;if(!this._events[o])return!1;var a,c,p=this._events[o],d=arguments.length;if(p.fn){switch(p.once&&this.removeListener(e,p.fn,void 0,!0),d){case 1:return p.fn.call(p.context),!0;case 2:return p.fn.call(p.context,t),!0;case 3:return p.fn.call(p.context,t,n),!0;case 4:return p.fn.call(p.context,t,n,r),!0;case 5:return p.fn.call(p.context,t,n,r,i),!0;case 6:return p.fn.call(p.context,t,n,r,i,s),!0}for(c=1,a=Array(d-1);c<d;c++)a[c-1]=arguments[c];p.fn.apply(p.context,a)}else{var l,h=p.length;for(c=0;c<h;c++)switch(p[c].once&&this.removeListener(e,p[c].fn,void 0,!0),d){case 1:p[c].fn.call(p[c].context);break;case 2:p[c].fn.call(p[c].context,t);break;case 3:p[c].fn.call(p[c].context,t,n);break;case 4:p[c].fn.call(p[c].context,t,n,r);break;default:if(!a)for(l=1,a=Array(d-1);l<d;l++)a[l-1]=arguments[l];p[c].fn.apply(p[c].context,a)}}return!0},eS.prototype.on=function(e,t,n){return eb(this,e,t,n,!1)},eS.prototype.once=function(e,t,n){return eb(this,e,t,n,!0)},eS.prototype.removeListener=function(e,t,n,r){var i=ey?ey+e:e;if(!this._events[i])return this;if(!t)return eT(this,i),this;var s=this._events[i];if(s.fn)s.fn!==t||r&&!s.once||n&&s.context!==n||eT(this,i);else{for(var o=0,a=[],c=s.length;o<c;o++)(s[o].fn!==t||r&&!s[o].once||n&&s[o].context!==n)&&a.push(s[o]);a.length?this._events[i]=1===a.length?a[0]:a:eT(this,i)}return this},eS.prototype.removeAllListeners=function(e){var t;return e?(t=ey?ey+e:e,this._events[t]&&eT(this,t)):(this._events=new eC,this._eventsCount=0),this},eS.prototype.off=eS.prototype.removeListener,eS.prototype.addListener=eS.prototype.on,eS.prefixed=ey,eS.EventEmitter=eS,e_=eS;var ek=function(e){return e.Data="data",e.Media="media",e}({}),eR=function(e){return e.BrowserIncompatible="browser-incompatible",e.Disconnected="disconnected",e.InvalidID="invalid-id",e.InvalidKey="invalid-key",e.Network="network",e.PeerUnavailable="peer-unavailable",e.SslUnavailable="ssl-unavailable",e.ServerError="server-error",e.SocketError="socket-error",e.SocketClosed="socket-closed",e.UnavailableID="unavailable-id",e.WebRTC="webrtc",e}({}),eP=function(e){return e.NegotiationFailed="negotiation-failed",e.ConnectionClosed="connection-closed",e}({}),ew=function(e){return e.NotOpenYet="not-open-yet",e.MessageToBig="message-too-big",e}({}),eE=function(e){return e.Binary="binary",e.BinaryUTF8="binary-utf8",e.JSON="json",e.None="raw",e}({}),ex=function(e){return e.Message="message",e.Disconnected="disconnected",e.Error="error",e.Close="close",e}({}),eD=function(e){return e.Heartbeat="HEARTBEAT",e.Candidate="CANDIDATE",e.Offer="OFFER",e.Answer="ANSWER",e.Open="OPEN",e.Error="ERROR",e.IdTaken="ID-TAKEN",e.InvalidKey="INVALID-KEY",e.Leave="LEAVE",e.Expire="EXPIRE",e}({});let eI="1.5.5";class eM extends e_.EventEmitter{start(e,t){this._id=e;let n=`${this._baseUrl}&id=${e}&token=${t}`;!this._socket&&this._disconnected&&(this._socket=new WebSocket(n+"&version="+eI),this._disconnected=!1,this._socket.onmessage=e=>{let t;try{t=JSON.parse(e.data),em.log("Server message received:",t)}catch(t){em.log("Invalid server message",e.data);return}this.emit(ex.Message,t)},this._socket.onclose=e=>{this._disconnected||(em.log("Socket closed.",e),this._cleanup(),this._disconnected=!0,this.emit(ex.Disconnected))},this._socket.onopen=()=>{this._disconnected||(this._sendQueuedMessages(),em.log("Socket open"),this._scheduleHeartbeat())})}_scheduleHeartbeat(){this._wsPingTimer=setTimeout(()=>{this._sendHeartbeat()},this.pingInterval)}_sendHeartbeat(){if(!this._wsOpen())return void em.log("Cannot send heartbeat, because socket closed");let e=JSON.stringify({type:eD.Heartbeat});this._socket.send(e),this._scheduleHeartbeat()}_wsOpen(){return!!this._socket&&1===this._socket.readyState}_sendQueuedMessages(){let e=[...this._messagesQueue];for(let t of(this._messagesQueue=[],e))this.send(t)}send(e){if(this._disconnected)return;if(!this._id)return void this._messagesQueue.push(e);if(!e.type)return void this.emit(ex.Error,"Invalid message");if(!this._wsOpen())return;let t=JSON.stringify(e);this._socket.send(t)}close(){this._disconnected||(this._cleanup(),this._disconnected=!0)}_cleanup(){this._socket&&(this._socket.onopen=this._socket.onmessage=this._socket.onclose=null,this._socket.close(),this._socket=void 0),clearTimeout(this._wsPingTimer)}constructor(e,t,n,r,i,s=5e3){super(),this.pingInterval=s,this._disconnected=!0,this._messagesQueue=[],this._baseUrl=(e?"wss://":"ws://")+t+":"+n+r+"peerjs?key="+i}}class eO{startConnection(e){let t=this._startPeerConnection();if(this.connection.peerConnection=t,this.connection.type===ek.Media&&e._stream&&this._addTracksToConnection(e._stream,t),e.originator){let n=this.connection,r={ordered:!!e.reliable},i=t.createDataChannel(n.label,r);n._initializeDataChannel(i),this._makeOffer()}else this.handleSDP("OFFER",e.sdp)}_startPeerConnection(){em.log("Creating RTCPeerConnection.");let e=new RTCPeerConnection(this.connection.provider.options.config);return this._setupListeners(e),e}_setupListeners(e){let t=this.connection.peer,n=this.connection.connectionId,r=this.connection.type,i=this.connection.provider;em.log("Listening for ICE candidates."),e.onicecandidate=e=>{e.candidate&&e.candidate.candidate&&(em.log(`Received ICE candidates for ${t}:`,e.candidate),i.socket.send({type:eD.Candidate,payload:{candidate:e.candidate,type:r,connectionId:n},dst:t}))},e.oniceconnectionstatechange=()=>{switch(e.iceConnectionState){case"failed":em.log("iceConnectionState is failed, closing connections to "+t),this.connection.emitError(eP.NegotiationFailed,"Negotiation of connection to "+t+" failed."),this.connection.close();break;case"closed":em.log("iceConnectionState is closed, closing connections to "+t),this.connection.emitError(eP.ConnectionClosed,"Connection to "+t+" closed."),this.connection.close();break;case"disconnected":em.log("iceConnectionState changed to disconnected on the connection with "+t);break;case"completed":e.onicecandidate=()=>{}}this.connection.emit("iceStateChanged",e.iceConnectionState)},em.log("Listening for data channel"),e.ondatachannel=e=>{em.log("Received data channel");let r=e.channel;i.getConnection(t,n)._initializeDataChannel(r)},em.log("Listening for remote stream"),e.ontrack=e=>{em.log("Received remote stream");let r=e.streams[0],s=i.getConnection(t,n);s.type===ek.Media&&this._addStreamToMediaConnection(r,s)}}cleanup(){em.log("Cleaning up PeerConnection to "+this.connection.peer);let e=this.connection.peerConnection;if(!e)return;this.connection.peerConnection=null,e.onicecandidate=e.oniceconnectionstatechange=e.ondatachannel=e.ontrack=()=>{};let t="closed"!==e.signalingState,n=!1,r=this.connection.dataChannel;r&&(n=!!r.readyState&&"closed"!==r.readyState),(t||n)&&e.close()}async _makeOffer(){let e=this.connection.peerConnection,t=this.connection.provider;try{let n=await e.createOffer(this.connection.options.constraints);em.log("Created offer."),this.connection.options.sdpTransform&&"function"==typeof this.connection.options.sdpTransform&&(n.sdp=this.connection.options.sdpTransform(n.sdp)||n.sdp);try{await e.setLocalDescription(n),em.log("Set localDescription:",n,`for:${this.connection.peer}`);let r={sdp:n,type:this.connection.type,connectionId:this.connection.connectionId,metadata:this.connection.metadata};if(this.connection.type===ek.Data){let e=this.connection;r={...r,label:e.label,reliable:e.reliable,serialization:e.serialization}}t.socket.send({type:eD.Offer,payload:r,dst:this.connection.peer})}catch(e){"OperationError: Failed to set local offer sdp: Called in wrong state: kHaveRemoteOffer"!=e&&(t.emitError(eR.WebRTC,e),em.log("Failed to setLocalDescription, ",e))}}catch(e){t.emitError(eR.WebRTC,e),em.log("Failed to createOffer, ",e)}}async _makeAnswer(){let e=this.connection.peerConnection,t=this.connection.provider;try{let n=await e.createAnswer();em.log("Created answer."),this.connection.options.sdpTransform&&"function"==typeof this.connection.options.sdpTransform&&(n.sdp=this.connection.options.sdpTransform(n.sdp)||n.sdp);try{await e.setLocalDescription(n),em.log("Set localDescription:",n,`for:${this.connection.peer}`),t.socket.send({type:eD.Answer,payload:{sdp:n,type:this.connection.type,connectionId:this.connection.connectionId},dst:this.connection.peer})}catch(e){t.emitError(eR.WebRTC,e),em.log("Failed to setLocalDescription, ",e)}}catch(e){t.emitError(eR.WebRTC,e),em.log("Failed to create answer, ",e)}}async handleSDP(e,t){t=new RTCSessionDescription(t);let n=this.connection.peerConnection,r=this.connection.provider;em.log("Setting remote description",t);try{await n.setRemoteDescription(t),em.log(`Set remoteDescription:${e} for:${this.connection.peer}`),"OFFER"===e&&await this._makeAnswer()}catch(e){r.emitError(eR.WebRTC,e),em.log("Failed to setRemoteDescription, ",e)}}async handleCandidate(e){em.log("handleCandidate:",e);try{await this.connection.peerConnection.addIceCandidate(e),em.log(`Added ICE candidate for:${this.connection.peer}`)}catch(e){this.connection.provider.emitError(eR.WebRTC,e),em.log("Failed to handleCandidate, ",e)}}_addTracksToConnection(e,t){if(em.log(`add tracks from stream ${e.id} to peer connection`),!t.addTrack)return em.error("Your browser does't support RTCPeerConnection#addTrack. Ignored.");e.getTracks().forEach(n=>{t.addTrack(n,e)})}_addStreamToMediaConnection(e,t){em.log(`add stream ${e.id} to media connection ${t.connectionId}`),t.addStream(e)}constructor(e){this.connection=e}}class eL extends e_.EventEmitter{emitError(e,t){em.error("Error:",t),this.emit("error",new eA(`${e}`,t))}}class eA extends Error{constructor(e,t){"string"==typeof t?super(t):(super(),Object.assign(this,t)),this.type=e}}class ej extends eL{get open(){return this._open}constructor(e,t,n){super(),this.peer=e,this.provider=t,this.options=n,this._open=!1,this.metadata=n.metadata}}class eB extends ej{get type(){return ek.Media}get localStream(){return this._localStream}get remoteStream(){return this._remoteStream}_initializeDataChannel(e){this.dataChannel=e,this.dataChannel.onopen=()=>{em.log(`DC#${this.connectionId} dc connection success`),this.emit("willCloseOnRemote")},this.dataChannel.onclose=()=>{em.log(`DC#${this.connectionId} dc closed for:`,this.peer),this.close()}}addStream(e){em.log("Receiving stream",e),this._remoteStream=e,super.emit("stream",e)}handleMessage(e){let t=e.type,n=e.payload;switch(e.type){case eD.Answer:this._negotiator.handleSDP(t,n.sdp),this._open=!0;break;case eD.Candidate:this._negotiator.handleCandidate(n.candidate);break;default:em.warn(`Unrecognized message type:${t} from peer:${this.peer}`)}}answer(e,t={}){if(this._localStream)return void em.warn("Local stream already exists on this MediaConnection. Are you answering a call twice?");for(let n of(this._localStream=e,t&&t.sdpTransform&&(this.options.sdpTransform=t.sdpTransform),this._negotiator.startConnection({...this.options._payload,_stream:e}),this.provider._getMessages(this.connectionId)))this.handleMessage(n);this._open=!0}close(){this._negotiator&&(this._negotiator.cleanup(),this._negotiator=null),this._localStream=null,this._remoteStream=null,this.provider&&(this.provider._removeConnection(this),this.provider=null),this.options&&this.options._stream&&(this.options._stream=null),this.open&&(this._open=!1,super.emit("close"))}constructor(e,t,n){super(e,t,n),this._localStream=this.options._stream,this.connectionId=this.options.connectionId||eB.ID_PREFIX+ef.randomToken(),this._negotiator=new eO(this),this._localStream&&this._negotiator.startConnection({_stream:this._localStream,originator:!0})}}eB.ID_PREFIX="mc_";class eU{_buildRequest(e){let t=this._options.secure?"https":"http",{host:n,port:r,path:i,key:s}=this._options,o=new URL(`${t}://${n}:${r}${i}${s}/${e}`);return o.searchParams.set("ts",`${Date.now()}${Math.random()}`),o.searchParams.set("version",eI),fetch(o.href,{referrerPolicy:this._options.referrerPolicy})}async retrieveId(){try{let e=await this._buildRequest("id");if(200!==e.status)throw Error(`Error. Status:${e.status}`);return e.text()}catch(t){em.error("Error retrieving ID",t);let e="";throw"/"===this._options.path&&this._options.host!==ef.CLOUD_HOST&&(e=" If you passed in a `path` to your self-hosted PeerServer, you'll also need to pass in that same path when creating a new Peer."),Error("Could not get an ID from the server."+e)}}async listAllPeers(){try{let e=await this._buildRequest("peers");if(200!==e.status){if(401===e.status){let e="";throw e=this._options.host===ef.CLOUD_HOST?"It looks like you're using the cloud server. You can email team@peerjs.com to enable peer listing for your API key.":"You need to enable `allow_discovery` on your self-hosted PeerServer to use this feature.",Error("It doesn't look like you have permission to list peers IDs. "+e)}throw Error(`Error. Status:${e.status}`)}return e.json()}catch(e){throw em.error("Error retrieving list peers",e),Error("Could not get list peers from the server."+e)}}constructor(e){this._options=e}}class eF extends ej{get type(){return ek.Data}_initializeDataChannel(e){this.dataChannel=e,this.dataChannel.onopen=()=>{em.log(`DC#${this.connectionId} dc connection success`),this._open=!0,this.emit("open")},this.dataChannel.onmessage=e=>{em.log(`DC#${this.connectionId} dc onmessage:`,e.data)},this.dataChannel.onclose=()=>{em.log(`DC#${this.connectionId} dc closed for:`,this.peer),this.close()}}close(e){if(e?.flush)return void this.send({__peerData:{type:"close"}});this._negotiator&&(this._negotiator.cleanup(),this._negotiator=null),this.provider&&(this.provider._removeConnection(this),this.provider=null),this.dataChannel&&(this.dataChannel.onopen=null,this.dataChannel.onmessage=null,this.dataChannel.onclose=null,this.dataChannel=null),this.open&&(this._open=!1,super.emit("close"))}send(e,t=!1){return this.open?this._send(e,t):void this.emitError(ew.NotOpenYet,"Connection is not open. You should listen for the `open` event before sending messages.")}async handleMessage(e){let t=e.payload;switch(e.type){case eD.Answer:await this._negotiator.handleSDP(e.type,t.sdp);break;case eD.Candidate:await this._negotiator.handleCandidate(t.candidate);break;default:em.warn("Unrecognized message type:",e.type,"from peer:",this.peer)}}constructor(e,t,n){super(e,t,n),this.connectionId=this.options.connectionId||eF.ID_PREFIX+eh(),this.label=this.options.label||this.connectionId,this.reliable=!!this.options.reliable,this._negotiator=new eO(this),this._negotiator.startConnection(this.options._payload||{originator:!0,reliable:this.reliable})}}eF.ID_PREFIX="dc_",eF.MAX_BUFFERED_AMOUNT=8388608;class eN extends eF{get bufferSize(){return this._bufferSize}_initializeDataChannel(e){super._initializeDataChannel(e),this.dataChannel.binaryType="arraybuffer",this.dataChannel.addEventListener("message",e=>this._handleDataMessage(e))}_bufferedSend(e){(this._buffering||!this._trySend(e))&&(this._buffer.push(e),this._bufferSize=this._buffer.length)}_trySend(e){if(!this.open)return!1;if(this.dataChannel.bufferedAmount>eF.MAX_BUFFERED_AMOUNT)return this._buffering=!0,setTimeout(()=>{this._buffering=!1,this._tryBuffer()},50),!1;try{this.dataChannel.send(e)}catch(e){return em.error(`DC#:${this.connectionId} Error when sending:`,e),this._buffering=!0,this.close(),!1}return!0}_tryBuffer(){if(!this.open||0===this._buffer.length)return;let e=this._buffer[0];this._trySend(e)&&(this._buffer.shift(),this._bufferSize=this._buffer.length,this._tryBuffer())}close(e){if(e?.flush)return void this.send({__peerData:{type:"close"}});this._buffer=[],this._bufferSize=0,super.close()}constructor(...e){super(...e),this._buffer=[],this._bufferSize=0,this._buffering=!1}}class ez extends eN{close(e){super.close(e),this._chunkedData={}}_handleDataMessage({data:e}){let t=i(e),n=t.__peerData;if(n)return"close"===n.type?void this.close():void this._handleChunk(t);this.emit("data",t)}_handleChunk(e){let t=e.__peerData,n=this._chunkedData[t]||{data:[],count:0,total:e.total};if(n.data[e.n]=new Uint8Array(e.data),n.count++,this._chunkedData[t]=n,n.total===n.count){delete this._chunkedData[t];let e=function(e){let t=0;for(let n of e)t+=n.byteLength;let n=new Uint8Array(t),r=0;for(let t of e)n.set(t,r),r+=t.byteLength;return n}(n.data);this._handleDataMessage({data:e})}}_send(e,t){let n=s(e);return n instanceof Promise?this._send_blob(n):!t&&n.byteLength>this.chunker.chunkedMTU?void this._sendChunks(n):void this._bufferedSend(n)}async _send_blob(e){let t=await e;if(t.byteLength>this.chunker.chunkedMTU)return void this._sendChunks(t);this._bufferedSend(t)}_sendChunks(e){let t=this.chunker.chunk(e);for(let e of(em.log(`DC#${this.connectionId} Try to send ${t.length} chunks...`),t))this.send(e,!0)}constructor(e,t,r){super(e,t,r),this.chunker=new n,this.serialization=eE.Binary,this._chunkedData={}}}class e$ extends eN{_handleDataMessage({data:e}){super.emit("data",e)}_send(e,t){this._bufferedSend(e)}constructor(...e){super(...e),this.serialization=eE.None}}class eV extends eN{_handleDataMessage({data:e}){let t=this.parse(this.decoder.decode(e)),n=t.__peerData;if(n&&"close"===n.type)return void this.close();this.emit("data",t)}_send(e,t){let n=this.encoder.encode(this.stringify(e));if(n.byteLength>=ef.chunkedMTU)return void this.emitError(ew.MessageToBig,"Message too big for JSON channel");this._bufferedSend(n)}constructor(...e){super(...e),this.serialization=eE.JSON,this.encoder=new TextEncoder,this.decoder=new TextDecoder,this.stringify=JSON.stringify,this.parse=JSON.parse}}class eG extends eL{get id(){return this._id}get options(){return this._options}get open(){return this._open}get socket(){return this._socket}get connections(){let e=Object.create(null);for(let[t,n]of this._connections)e[t]=n;return e}get destroyed(){return this._destroyed}get disconnected(){return this._disconnected}_createServerConnection(){let e=new eM(this._options.secure,this._options.host,this._options.port,this._options.path,this._options.key,this._options.pingInterval);return e.on(ex.Message,e=>{this._handleMessage(e)}),e.on(ex.Error,e=>{this._abort(eR.SocketError,e)}),e.on(ex.Disconnected,()=>{this.disconnected||(this.emitError(eR.Network,"Lost connection to server."),this.disconnect())}),e.on(ex.Close,()=>{this.disconnected||this._abort(eR.SocketClosed,"Underlying socket is already closed.")}),e}_initialize(e){this._id=e,this.socket.start(e,this._options.token)}_handleMessage(e){let t=e.type,n=e.payload,r=e.src;switch(t){case eD.Open:this._lastServerId=this.id,this._open=!0,this.emit("open",this.id);break;case eD.Error:this._abort(eR.ServerError,n.msg);break;case eD.IdTaken:this._abort(eR.UnavailableID,`ID "${this.id}" is taken`);break;case eD.InvalidKey:this._abort(eR.InvalidKey,`API KEY "${this._options.key}" is invalid`);break;case eD.Leave:em.log(`Received leave message from ${r}`),this._cleanupPeer(r),this._connections.delete(r);break;case eD.Expire:this.emitError(eR.PeerUnavailable,`Could not connect to peer ${r}`);break;case eD.Offer:{let e=n.connectionId,t=this.getConnection(r,e);if(t&&(t.close(),em.warn(`Offer received for existing Connection ID:${e}`)),n.type===ek.Media){let i=new eB(r,this,{connectionId:e,_payload:n,metadata:n.metadata});t=i,this._addConnection(r,t),this.emit("call",i)}else{if(n.type!==ek.Data)return void em.warn(`Received malformed connection type:${n.type}`);let i=new this._serializers[n.serialization](r,this,{connectionId:e,_payload:n,metadata:n.metadata,label:n.label,serialization:n.serialization,reliable:n.reliable});t=i,this._addConnection(r,t),this.emit("connection",i)}for(let n of this._getMessages(e))t.handleMessage(n);break}default:{if(!n)return void em.warn(`You received a malformed message from ${r} of type ${t}`);let i=n.connectionId,s=this.getConnection(r,i);s&&s.peerConnection?s.handleMessage(e):i?this._storeMessage(i,e):em.warn("You received an unrecognized message:",e)}}}_storeMessage(e,t){this._lostMessages.has(e)||this._lostMessages.set(e,[]),this._lostMessages.get(e).push(t)}_getMessages(e){let t=this._lostMessages.get(e);return t?(this._lostMessages.delete(e),t):[]}connect(e,t={}){if(t={serialization:"default",...t},this.disconnected){em.warn("You cannot connect to a new Peer because you called .disconnect() on this Peer and ended your connection with the server. You can create a new Peer to reconnect, or call reconnect on this peer if you believe its ID to still be available."),this.emitError(eR.Disconnected,"Cannot connect to new Peer after disconnecting from server.");return}let n=new this._serializers[t.serialization](e,this,t);return this._addConnection(e,n),n}call(e,t,n={}){if(this.disconnected){em.warn("You cannot connect to a new Peer because you called .disconnect() on this Peer and ended your connection with the server. You can create a new Peer to reconnect."),this.emitError(eR.Disconnected,"Cannot connect to new Peer after disconnecting from server.");return}if(!t)return void em.error("To call a peer, you must provide a stream from your browser's `getUserMedia`.");let r=new eB(e,this,{...n,_stream:t});return this._addConnection(e,r),r}_addConnection(e,t){em.log(`add connection ${t.type}:${t.connectionId} to peerId:${e}`),this._connections.has(e)||this._connections.set(e,[]),this._connections.get(e).push(t)}_removeConnection(e){let t=this._connections.get(e.peer);if(t){let n=t.indexOf(e);-1!==n&&t.splice(n,1)}this._lostMessages.delete(e.connectionId)}getConnection(e,t){let n=this._connections.get(e);if(!n)return null;for(let e of n)if(e.connectionId===t)return e;return null}_delayedAbort(e,t){setTimeout(()=>{this._abort(e,t)},0)}_abort(e,t){em.error("Aborting!"),this.emitError(e,t),this._lastServerId?this.disconnect():this.destroy()}destroy(){this.destroyed||(em.log(`Destroy peer with ID:${this.id}`),this.disconnect(),this._cleanup(),this._destroyed=!0,this.emit("close"))}_cleanup(){for(let e of this._connections.keys())this._cleanupPeer(e),this._connections.delete(e);this.socket.removeAllListeners()}_cleanupPeer(e){let t=this._connections.get(e);if(t)for(let e of t)e.close()}disconnect(){if(this.disconnected)return;let e=this.id;em.log(`Disconnect peer with ID:${e}`),this._disconnected=!0,this._open=!1,this.socket.close(),this._lastServerId=e,this._id=null,this.emit("disconnected",e)}reconnect(){if(this.disconnected&&!this.destroyed)em.log(`Attempting reconnection to server with ID ${this._lastServerId}`),this._disconnected=!1,this._initialize(this._lastServerId);else if(this.destroyed)throw Error("This peer cannot reconnect to the server. It has already been destroyed.");else if(this.disconnected||this.open)throw Error(`Peer ${this.id} cannot reconnect because it is not disconnected from the server!`);else em.error("In a hurry? We're still trying to make the initial connection!")}listAllPeers(e=e=>{}){this._api.listAllPeers().then(t=>e(t)).catch(e=>this._abort(eR.ServerError,e))}constructor(e,t){let n;if(super(),this._serializers={raw:e$,json:eV,binary:ez,"binary-utf8":ez,default:ez},this._id=null,this._lastServerId=null,this._destroyed=!1,this._disconnected=!1,this._open=!1,this._connections=new Map,this._lostMessages=new Map,e&&e.constructor==Object?t=e:e&&(n=e.toString()),t={debug:0,host:ef.CLOUD_HOST,port:ef.CLOUD_PORT,path:"/",key:eG.DEFAULT_KEY,token:ef.randomToken(),config:ef.defaultConfig,referrerPolicy:"strict-origin-when-cross-origin",serializers:{},...t},this._options=t,this._serializers={...this._serializers,...this.options.serializers},"/"===this._options.host&&(this._options.host=window.location.hostname),this._options.path&&("/"!==this._options.path[0]&&(this._options.path="/"+this._options.path),"/"!==this._options.path[this._options.path.length-1]&&(this._options.path+="/")),void 0===this._options.secure&&this._options.host!==ef.CLOUD_HOST?this._options.secure=ef.isSecure():this._options.host==ef.CLOUD_HOST&&(this._options.secure=!0),this._options.logFunction&&em.setLogFunction(this._options.logFunction),em.logLevel=this._options.debug||0,this._api=new eU(t),this._socket=this._createServerConnection(),!ef.supports.audioVideo&&!ef.supports.data)return void this._delayedAbort(eR.BrowserIncompatible,"The current browser does not support WebRTC");if(n&&!ef.validateId(n))return void this._delayedAbort(eR.InvalidID,`ID "${n}" is invalid`);n?this._initialize(n):this._api.retrieveId().then(e=>this._initialize(e)).catch(e=>this._abort(eR.ServerError,e))}}eG.DEFAULT_KEY="peerjs",window.peerjs={Peer:eG,util:ef},window.Peer=eG})();
+//# sourceMappingURL=peerjs.min.js.map
+</script>
+<script>/* へんてこペイント お題カード（オリジナル）。1行=1枚、6語。
+ * 書式: 表記[=よみ][!]:絵   ! は「描きにくい」お題（CPU回答者の当てやすさを下げる隠し難易度）
+ * 絵は 100x100 の方眼に、L(線) C(円) R(四角=線4本) P(折れ線) Q(閉じた多角形) H(棒人間=円1+線4) で書く。
+ * 「/」より前が要点、後ろはおまけ（強いCPUは要点だけ描くので画数が少ない）。 */
+window.HP_CARDS = [
+"屋上=おくじょう!:R30 45 40 50;H50 22 .7/L30 45 70 45;R38 60 8 8;R54 60 8 8",
+"サンダル:Q30 20 70 20 72 85 28 85;P35 45 50 60 65 45/L50 60 50 85",
+"逆立ち=さかだち!:C50 80 6;L50 74 50 45;L50 74 38 92;L50 74 62 92;L50 45 40 15;L50 45 60 15/L20 95 80 95",
+"ポップコーン:Q30 45 70 45 64 92 36 92;C38 38 8;C52 33 9;C64 39 8/L42 45 40 92;L58 45 60 92",
+"鹿=しか:C30 35 8;L35 40 70 50;L45 46 42 80;L68 50 70 80/P26 28 20 12 14 10;P32 27 36 10 42 8",
+"ちくわ:Q15 40 85 40 85 60 15 60;C85 50 10;C85 50 4",
+"看板=かんばん!:R20 20 60 35;L35 55 35 90;L65 55 65 90/L28 32 72 32;L28 43 60 43",
+"かつら!:C50 60 20;P25 55 30 30 50 22 70 30 75 55/P32 40 50 32 68 40",
+"豆腐=とうふ:Q25 45 60 45 75 35 40 35;R25 45 35 30;P60 45 60 75 75 65 75 35",
+"ポスト:R35 30 30 60;C50 30 15;L35 90 65 90/L42 45 58 45",
+"お好み焼き=おこのみやき:C50 55 32;P30 50 40 40 50 50 60 40 70 50/P60 20 85 5;P66 23 88 10",
+"ヘルメット:P20 60 22 40 35 25 50 20 65 25 78 40 80 60;L15 60 85 60/L50 20 50 60",
+"川=かわ!:P10 20 40 40 30 70 60 95;P30 10 60 30 50 60 85 85/P60 70 70 65",
+"ジョギング!:C55 15 6;L55 21 50 50;L50 50 40 70;L40 70 45 85;L50 50 65 80;P30 35 52 32 70 40/L10 95 90 95",
+"拍手=はくしゅ!:Q35 40 45 25 55 40 45 60;Q55 40 65 25 75 40 65 60;L20 20 30 30;L80 20 70 30;L50 10 50 18",
+"てぶくろ:Q30 40 70 40 70 85 30 85;L70 55 85 45;L38 40 38 20;L50 40 50 15;L62 40 62 20/L30 75 70 75",
+"目玉焼き=めだまやき:Q15 50 30 25 70 20 88 45 75 80 30 82;C50 50 12",
+"タクシー:R15 50 70 22;P28 50 35 35 65 35 72 50;C30 75 8;C70 75 8;R43 28 14 7",
+"ステーキ:C50 55 35;Q25 45 65 35 78 60 40 72/L80 15 80 45;P15 15 15 45",
+"ねずみ:C45 60 20;C30 38 8;C58 38 8;P65 65 85 70 90 55/C40 58 2;L28 62 15 58;L28 66 15 70",
+"給食=きゅうしょく!:R15 45 70 40;C35 60 10;C65 60 10;L50 50 50 80/L20 80 80 80",
+"ハードル:L20 40 80 40;L25 40 25 85;L75 40 75 85;L20 52 80 52/L15 85 35 85;L65 85 85 85",
+"体温計=たいおんけい:Q30 15 40 15 40 80 30 80;C35 85 8;L35 50 35 82/L42 30 46 30;L42 45 46 45;L42 60 46 60",
+"双子=ふたご!:H35 20;H65 20/L22 95 78 95",
+"カメラ:R15 35 70 45;C50 57 15;C50 57 7;R25 27 15 8/C72 42 3",
+"海=うみ!:P5 50 20 40 35 50 50 40 65 50 80 40 95 50;C80 20 10;P5 70 25 62 45 70 65 62 85 70",
+"みずでっぽう:Q15 40 60 40 60 55 15 55;Q30 55 42 55 38 80 26 80;P60 47 70 47;L75 45 95 40;L75 50 95 55",
+"虫歯=むしば!:Q30 25 70 25 75 55 62 90 52 60 45 60 38 90 25 55;C55 38 6",
+"台風=たいふう!:C50 50 6;C50 50 20;C50 50 36;L50 14 70 8;L50 86 30 92",
+"バウムクーヘン:C50 50 38;C50 50 28;C50 50 18;C50 50 8",
+"透明人間=とうめいにんげん!:Q35 15 65 15 65 45 35 45;L20 45 80 45;C40 55 8;C60 55 8;L50 63 50 66/L30 80 70 80",
+"なだれ!:P5 90 40 20 95 90;C60 50 6;C70 60 8;C55 70 7;C78 78 9/L5 90 95 90",
+"貝=かい:P15 75 30 35 50 25 70 35 85 75;L15 75 85 75;L50 25 50 75;L33 33 40 75;L67 33 60 75",
+"スパゲッティ:P10 55 90 55 75 80 25 80 10 55;C40 45 12;C58 45 12/L70 10 60 50",
+"弓・弓矢=ゆみ:P40 10 65 50 40 90;L40 10 40 90;L25 50 90 50/P82 45 90 50 82 55",
+"ドラゴン!:C25 30 10;L33 35 60 55;C65 60 15;P60 45 75 15 85 40;L78 70 95 85/P20 22 15 10;P30 22 35 10",
+"アフロ:C50 40 30;C50 60 16/L42 58 46 58;L54 58 58 58",
+"巻物=まきもの:R25 25 50 50;C25 50 10;C75 50 10/L35 40 65 40;L35 55 65 55",
+"すごろく!:R15 15 20 20;R35 15 20 20;R55 15 20 20;R55 35 20 20;R55 55 20 20;C25 25 5",
+"車=くるま:P10 65 10 50 30 50 40 35 65 35 75 50 90 50 90 65 10 65;C28 68 8;C72 68 8",
+"スワンボート:P15 70 85 70 75 85 25 85 15 70;P70 70 75 30 65 20 55 25;C60 22 2/P20 70 35 55 60 55",
+"たこ焼き=たこやき:C30 55 12;C55 55 12;C42 38 12;L70 15 50 45",
+"どら焼き=どらやき:P10 50 30 35 70 35 90 50;P10 50 30 65 70 65 90 50;L10 50 90 50",
+"ネックレス!:P20 20 35 60 50 70 65 60 80 20;C50 78 8/C35 60 2;C65 60 2",
+"電卓=でんたく:R25 10 50 80;R32 18 36 15/C38 48 4;C50 48 4;C62 48 4;C38 62 4;C50 62 4;C62 62 4",
+"あみだくじ:L20 10 20 90;L40 10 40 90;L60 10 60 90;L80 10 80 90;L20 30 40 30;L40 50 60 50;L60 25 80 25;L20 70 40 70",
+"水着=みずぎ!:P25 15 35 40 65 40 75 15;P30 60 70 60 55 85 45 85 30 60/L42 40 42 25;L58 40 58 25",
+"ベルト:R5 40 90 20;R40 35 20 30;L50 40 50 60/C70 50 2",
+"風車=ふうしゃ!:L50 50 50 95;L35 95 65 95;L20 20 80 80;L80 20 20 80;C50 50 5",
+"アイマスク:Q15 45 45 40 50 48 55 40 85 45 80 65 55 62 45 62 20 65;L15 50 5 45;L85 50 95 45",
+"ひじ!:P20 30 55 60 85 30;C55 62 5/L20 25 20 35",
+"ベンチ:L10 50 90 50;L10 60 90 60;L20 60 20 85;L80 60 80 85;L10 35 90 35/L20 35 20 50;L80 35 80 50",
+"通勤ラッシュ=つうきんらっしゅ!:R5 15 90 75;C20 40 6;C35 40 6;C50 40 6;C65 40 6;C80 40 6/C28 60 6;C43 60 6;C58 60 6;C73 60 6",
+"消防車=しょうぼうしゃ:R10 45 80 30;C28 78 8;C72 78 8;L20 45 70 20;L25 48 75 23/L30 40 60 22",
+"へび:P10 80 30 60 50 80 70 60 85 40;C88 35 6/L94 35 99 33",
+"畳=たたみ:R10 10 80 80;L10 25 90 25;L10 75 90 75/L50 25 50 75",
+"リンボーダンス!:L15 30 85 30;L20 30 20 95;L80 30 80 95;C30 55 6;L35 58 70 50;L70 50 75 92;L35 58 30 92",
+"象=ぞう:C55 50 25;C35 40 10;P28 45 20 80 28 85;L45 70 45 90;L65 70 65 90/C28 30 12",
+"パチンコ!:R15 10 70 80;C50 40 18;C30 70 5;C70 70 5/C50 40 4",
+"ピザ:C50 50 38;L12 50 88 50;L50 12 50 88;L23 23 77 77;L77 23 23 77/C35 40 4;C65 60 4",
+"こいのぼり:L15 10 15 95;Q15 15 75 15 65 25 75 35 15 35;Q15 40 65 40 55 50 65 60 15 60/C25 25 3;C25 50 3",
+"傘=かさ:P10 50 30 25 50 18 70 25 90 50;L10 50 90 50;P50 50 50 85 42 88/L50 18 50 12",
+"すいか:C50 50 35/P30 30 32 50 30 70;P50 18 50 50 50 82;P70 30 68 50 70 70",
+"電球=でんきゅう:C50 38 25;R40 63 20 15;L42 85 58 85/P42 40 50 30 58 40",
+"コンサート!:R10 15 80 35;H50 25 .7;C20 80 6;C40 80 6;C60 80 6;C80 80 6",
+"うなぎ:P5 55 25 45 45 55 65 45 85 55;C88 52 4/P5 65 25 55 45 65 65 55 85 63",
+"中国=ちゅうごく!:P20 20 50 15 85 25 80 60 55 85 30 70 15 45 20 20;L30 45 75 45",
+"フォーク:L50 45 50 95;R35 15 30 30;L35 5 35 15;L50 5 50 15;L65 5 65 15",
+"ロケット:Q50 5 65 30 65 75 35 75 35 30;Q35 60 20 85 35 75;Q65 60 80 85 65 75;C50 38 7",
+"雪だるま=ゆきだるま:C50 30 15;C50 68 24/L35 15 65 15;L38 5 62 5;L50 45 50 55",
+"ハンバーガー:P15 45 30 25 70 25 85 45 15 45;L15 55 85 55;R15 62 70 12",
+"かたつむり:C60 50 22;C60 50 10;P15 75 85 75;P25 75 20 45;L20 45 15 30;L20 45 28 30",
+"おにぎり:Q50 15 85 80 15 80;R35 55 30 25",
+"信号機=しんごうき:R10 30 80 25;C25 42 8;C50 42 8;C75 42 8;L50 55 50 95",
+"眼鏡=めがね:C30 50 15;C70 50 15;L45 50 55 50;L15 45 5 40;L85 45 95 40",
+"自転車=じてんしゃ:C25 65 15;C75 65 15;P25 65 45 65 60 40 75 65;L45 65 38 40;L60 40 65 30",
+"時計=とけい:C50 50 38;L50 50 50 25;L50 50 68 58/C50 50 3",
+"ケーキ!:R20 45 60 40;L20 60 80 60;L50 25 50 45;C50 20 4",
+"テント:Q50 10 90 85 10 85;Q50 40 62 85 38 85",
+"釣り=つり!:H25 35;L33 46 75 10;P75 10 80 70;C80 75 3/P40 85 95 85",
+"花火=はなび:C50 40 6;L50 30 50 10;L50 50 50 70;L40 40 20 40;L60 40 80 40;L43 33 30 20;L57 33 70 20;L43 47 30 60;L57 47 70 60",
+"かき氷=かきごおり:Q20 45 80 45 65 90 35 90;P20 45 35 20 50 15 65 20 80 45/L65 15 75 5",
+"トイレ!:R30 10 40 25;Q25 45 75 45 70 65 30 65;R40 65 20 25",
+"エレベーター!:R20 10 60 85;L50 10 50 95;P80 30 88 22 96 30;P80 50 88 58 96 50",
+"お風呂=おふろ!:P10 50 10 85 90 85 90 50;L10 50 90 50;C40 40 8/P25 30 25 15;P55 30 55 15",
+"金魚=きんぎょ:Q15 50 35 35 60 50 35 65;Q60 50 80 35 80 65;C28 47 2/C70 20 4;C75 10 3",
+"ギター:C40 65 20;C55 45 13;L60 40 90 10;C40 65 5",
+"ドーナツ:C50 50 35;C50 50 12",
+"新幹線=しんかんせん:P5 70 60 70 90 55 95 70 5 70;P5 70 5 50 60 50 90 55;L10 60 80 60",
+"なわとび!:H50 30;P38 75 30 92 50 98 70 92 62 75;P38 41 30 30 30 20 50 10 70 20 70 30 62 41",
+"キリン:L40 30 50 70;C38 25 6;R45 65 35 15;L50 80 50 95;L75 80 75 95/C55 72 3;C68 70 3",
+"ちょうちょ:Q50 50 20 25 20 50;Q50 50 80 25 80 50;Q50 50 25 80 35 60;Q50 50 75 80 65 60;L50 50 45 20;L50 50 55 20",
+"歯ブラシ=はぶらし:L10 70 70 40;R65 25 20 10;L68 25 68 18;L74 25 74 18;L80 25 80 18",
+"信号待ち=しんごうまち!:H30 30;L70 20 70 95;R62 10 16 30;C70 18 4;C70 32 4/L10 95 90 95",
+"相撲=すもう!:C50 50 40;H38 25;H62 25",
+"エビフライ:Q15 60 70 40 80 55 25 75;P78 48 92 35 90 55 80 55/L30 55 35 70;L45 50 50 65",
+"ゾンビ!:H50 20;L42 31 75 31;L58 31 80 36/L45 18 48 18",
+"ぶらんこ:L10 10 90 10;L10 10 10 95;L90 10 90 95;L40 10 40 70;L60 10 60 70;L40 70 60 70",
+"火山=かざん!:P5 90 35 30 65 30 95 90;P42 30 40 10;P50 30 50 5;P58 30 62 10",
+"手紙=てがみ:R15 25 70 50;P15 25 50 55 85 25",
+"ピラミッド:Q50 15 90 80 10 80;L50 15 60 80;L5 90 95 90/C80 20 8",
+"トランプ!:R20 20 40 55;R40 30 40 55;Q60 45 66 55 60 65 54 55",
+"バナナ:P20 30 40 70 80 75;P20 30 50 55 80 75;L18 25 22 33",
+"ロボット!:R30 15 40 30;R25 50 50 35;C42 28 4;C58 28 4;L50 15 50 5;L25 60 10 75;L75 60 90 75",
+"ワニ=わに!:P5 55 50 50 95 55 50 60 5 55;L15 60 15 72;L40 60 40 72;C35 48 3/P50 55 55 52 60 55 65 52",
+"お弁当=おべんとう:R10 25 80 50;L50 25 50 75;C30 50 10;C68 40 6;C68 62 6",
+"王様=おうさま!:H50 40;P35 30 35 15 43 22 50 12 57 22 65 15 65 30/L35 30 65 30",
+"かかし!:L50 30 50 95;L15 45 85 45;C50 25 10;P30 18 70 18 50 5 30 18",
+"たい焼き=たいやき:Q15 50 55 30 75 50 55 70;Q75 50 92 35 92 65;C28 46 3",
+"にんじん:Q35 25 65 25 50 95;P50 25 40 5;P50 25 60 5/L40 45 47 45;L45 65 52 65",
+"かみなり!:P35 5 25 45 45 45 30 95 70 35 50 35 65 5;C70 15 10",
+"ジェットコースター!:P5 85 25 20 45 85 65 40 95 85;R20 10 15 10",
+"滑り台=すべりだい:L20 30 20 95;L35 30 35 95;L20 30 35 30;L35 30 90 95/L20 50 35 50;L20 70 35 70",
+"ウサギ=うさぎ:C50 65 20;Q42 47 35 10 46 10;Q58 47 54 10 65 10/C43 63 2;C57 63 2",
+"ペンギン:Q50 10 75 50 70 90 30 90 25 50;C50 55 12/Q45 25 55 25 50 32",
+"蛇口=じゃぐち!:L10 30 60 30;L10 45 60 45;P60 30 75 40 75 60;L60 45 70 60;C72 75 3;C72 88 3",
+"かぶとむし:C50 60 20;C50 35 8;P50 27 50 10 55 15;L32 50 18 40;L68 50 82 40;L32 70 18 80;L68 70 82 80",
+"掃除機=そうじき!:C25 70 15;P35 60 60 20 75 30;L75 30 90 90;L80 90 98 90",
+"寿司=すし:Q15 55 85 55 80 75 20 75;Q15 55 50 35 85 55",
+"迷路=めいろ!:R10 10 80 80;P25 10 25 70 50 70;P50 25 75 25 75 90;L40 40 60 40",
+"マラソン!:H40 20;L10 50 90 50;L50 50 50 30;C80 75 10",
+"いちご:Q25 35 75 35 50 90;P35 35 50 22 65 35;L50 22 50 12/C45 50 2;C55 55 2;C50 68 2",
+"郵便屋さん=ゆうびんやさん!:H35 25;R50 40 30 20;P50 40 65 52 80 40",
+"ほうき:L65 5 50 60;Q40 55 60 65 55 95 20 85;L42 70 32 88;L50 72 45 92",
+"綱引き=つなひき!:H15 30;H85 30;L23 41 77 41;L50 35 50 47",
+"ジャンケン!:C30 40 12;C70 40 12;L22 30 18 15;L30 28 30 12;L62 30 58 15;L70 28 70 12;L78 30 82 15",
+"灯台=とうだい:Q40 25 60 25 68 90 32 90;R38 12 24 13;L20 18 38 18;L62 18 80 18",
+"石けん=せっけん:Q20 50 30 35 70 35 80 50 70 65 30 65;C30 25 6;C45 15 4;C80 25 5",
+"ちょうちん!:C50 55 25;R40 25 20 7;R40 82 20 7;L25 50 75 50;L28 65 72 65;L50 10 50 25",
+"うちわ:C50 35 28;L50 63 50 95/L30 20 70 50",
+"けん玉=けんだま!:L50 50 50 95;L35 50 65 50;C50 20 12;L50 32 50 50",
+"風船=ふうせん:C35 35 18;C65 30 16;P35 53 45 90;P65 46 45 90",
+"駅=えき!:R10 30 80 40;L5 30 95 30;L5 80 95 80;L5 90 95 90;R40 10 20 15/C50 17 4",
+"ロープウェイ!:L5 15 95 45;R35 35 25 25;L47 27 47 35",
+"お化け=おばけ:P25 85 25 35 40 15 60 15 75 35 75 85 62 75 50 85 38 75 25 85;C42 40 4;C58 40 4",
+"ろうそく:R40 40 20 50;L50 40 50 30;Q50 10 58 25 50 30 42 25",
+"マイク:C50 25 15;L45 40 45 70;L55 40 55 70;L45 70 55 70;L50 70 50 90",
+"ヨット:L50 10 50 70;Q50 10 85 65 50 65;Q48 20 15 65 48 65;Q10 75 90 75 80 90 20 90",
+"雨=あめ:P15 40 25 25 50 20 75 25 85 40 15 40;L25 50 20 65;L45 50 40 65;L65 50 60 65;L35 72 30 87;L55 72 50 87",
+"カレーライス:P10 50 90 50 75 80 25 80 10 50;C35 45 8;P50 45 85 50",
+"ジャングルジム:R20 20 60 60;L40 20 40 80;L60 20 60 80;L20 40 80 40;L20 60 80 60",
+"宝箱=たからばこ:R15 45 70 40;P15 45 15 30 30 20 70 20 85 30 85 45;R45 40 10 12",
+"ブーメラン!:Q15 70 50 15 85 70 70 70 50 40 30 70",
+"マトリョーシカ!:C50 30 15;C50 68 24;C50 28 8",
+"ドミノ!:R10 30 12 40;Q30 30 42 32 40 72 28 70;Q50 40 60 45 52 80 44 76;Q70 60 85 62 80 82 66 80",
+"きのこ:P15 50 25 25 50 15 75 25 85 50 15 50;R40 50 20 35;C40 35 5;C62 35 5",
+"たんぽぽ:C50 30 15;C50 30 6;L50 45 50 95;Q50 75 30 65 35 80",
+"納豆=なっとう!:C40 60 8;C55 55 8;C50 70 8;L30 10 45 50;L40 10 52 48",
+"写真=しゃしん!:R15 15 70 70;R22 22 56 45;C45 40 8/P22 67 40 50 55 60 78 45",
+"恐竜=きょうりゅう!:C75 25 10;P68 32 60 60 20 80;P60 60 75 70;L40 70 40 92;L55 66 55 92",
+"潜水艦=せんすいかん!:Q10 55 25 45 80 45 95 55 80 65 25 65;R45 30 15 15;L52 30 52 18;L52 18 60 18",
+"いす:L30 10 30 90;L30 50 70 50;L70 50 70 90;L30 10 40 10",
+"カップラーメン!:Q25 30 75 30 70 90 30 90;L20 30 80 30;L45 30 50 10;L55 30 60 10",
+"すずめ:C40 50 18;C62 35 10;Q72 33 82 37 72 40;L25 55 8 62;L38 68 35 85;L45 68 45 85",
+"オムライス:P10 70 90 70 75 85 25 85 10 70;P15 70 30 45 70 45 85 70;P35 55 45 60 55 55",
+"綿あめ=わたあめ:C50 35 25;C38 25 12;C62 28 12;L50 60 50 95",
+"とび箱=とびばこ!:Q30 40 70 40 80 90 20 90;L25 55 75 55;L22 72 78 72;H15 15 .6",
+"指輪=ゆびわ:C50 60 25;C50 60 20;Q50 15 60 28 50 35 40 28",
+"カエル=かえる:C50 60 25;C35 35 8;C65 35 8/C35 35 3;C65 35 3;P38 65 50 72 62 65",
+"おでん:L50 5 50 95;C50 22 12;Q35 45 65 45 50 65;R38 70 24 18",
+"かぶ!:C50 55 20;P50 75 50 95;P50 35 40 10;P50 35 60 10;P50 35 50 5",
+"ハンモック:L10 20 10 95;L90 20 90 95;P10 30 30 60 70 60 90 30/H50 40 .5",
+"冷蔵庫=れいぞうこ:R25 5 50 90;L25 35 75 35;L65 15 65 28;L65 45 65 60",
+"たこ:C50 35 22;L32 50 20 85;L42 55 38 90;L58 55 62 90;L68 50 80 85;C42 33 3;C58 33 3",
+"船=ふね:P10 55 90 55 75 75 25 75 10 55;R35 35 30 20;R45 20 8 15",
+"ハサミ=はさみ:C30 70 10;C55 80 10;L35 62 85 15;L48 72 88 25",
+"雲=くも!:C30 55 15;C50 45 20;C72 55 15;L15 65 87 65",
+"太鼓=たいこ:R20 30 60 40;C50 30 30/L35 5 50 25;L75 5 60 25",
+"歯医者=はいしゃ!:H25 25;L10 60 60 60;L60 60 70 40;H70 20 .7;L78 35 90 45",
+"灰皿=はいざら!:C50 55 30;C50 55 20;L60 45 90 30",
+"梅干し=うめぼし:C50 55 30;C50 55 4;Q50 20 60 10 65 20",
+"けんか!:H30 25;H70 25;P45 20 55 10 50 25 60 20",
+"エスカレーター:P5 85 25 85 75 25 95 25;P5 65 25 65 75 5 95 5;L25 85 25 65;L75 25 75 5",
+"ピアノ:R10 30 80 40;L20 30 20 70;L30 30 30 70;L40 30 40 70;L50 30 50 70;L60 30 60 70;L70 30 70 70;L80 30 80 70",
+"もち:Q20 70 30 40 70 40 80 70;Q30 40 40 15 60 15 70 40",
+"天ぷら=てんぷら!:Q20 40 80 40 75 70 25 70;P20 40 15 30;P35 40 30 28;P50 40 50 28;P65 40 70 28",
+"アイロン:Q15 75 85 75 85 55 35 40;P35 50 50 20 80 20 80 55",
+"入道雲=にゅうどうぐも!:C50 30 18;C35 55 20;C65 55 20;L10 75 90 75",
+"いかだ:L10 50 90 50;L10 60 90 60;L10 70 90 70;L10 80 90 80;L30 45 30 85;L70 45 70 85;L50 50 50 10",
+"マスク:R25 35 50 30;L25 40 10 30;L25 60 10 70;L75 40 90 30;L75 60 90 70;L30 45 70 45",
+"金づち=かなづち:R20 15 50 20;L45 35 45 95",
+"線香花火=せんこうはなび!:L50 5 50 60;C50 65 5;L50 70 42 90;L50 70 58 90;L45 68 35 78;L55 68 65 78",
+"かまぼこ:P10 75 15 45 50 30 85 45 90 75 10 75;L10 85 90 85",
+"耳=みみ!:P40 15 70 20 75 50 55 85 40 80;P50 35 60 40 55 55",
+"にわとり:C40 55 20;C60 30 10;Q55 20 60 12 65 20;Q70 30 78 32 70 35;L35 75 35 92;L45 75 45 92",
+"ふくろう:C50 55 30;C40 45 10;C60 45 10;Q47 55 53 55 50 62;P30 25 35 35;P70 25 65 35",
+"かいだん!:P10 90 10 75 30 75 30 60 50 60 50 45 70 45 70 30 90 30",
+"電話=でんわ:R20 45 60 40;P15 35 35 25 65 25 85 35;C50 65 10",
+"スクーター!:C25 70 12;C75 70 12;P25 70 50 70 70 45 80 45;L45 55 55 55",
+"せんぷうき:C50 35 25;C50 35 5;L50 60 50 90;L35 90 65 90;L50 10 50 60;L25 35 75 35",
+"空中ブランコ=くうちゅうぶらんこ!:L20 10 20 95;L40 10 30 60;L60 10 50 60;H40 35 .6",
+"パラシュート:P10 40 30 15 70 15 90 40 10 40;L10 40 45 75;L90 40 55 75;H50 65 .5",
+"砂浜=すなはま!:P5 60 50 50 95 60;P50 50 50 25;P30 25 70 25 50 15 30 25;C80 20 8",
+"かくれんぼ!:R10 20 50 70;H70 30 .8;C30 15 6",
+"たき火=たきび:L20 85 80 70;L20 70 80 85;Q50 15 70 60 50 70 30 60",
+"トンネル:P10 90 10 40 30 20 70 20 90 40 90 90;P30 90 30 55 50 40 70 55 70 90",
+"大仏=だいぶつ!:C50 30 15;Q20 90 30 50 70 50 80 90;C50 75 10",
+"猫=ねこ:C50 55 25;Q30 40 32 18 45 32;Q55 32 68 18 70 40;L25 60 10 58;L75 60 90 58/C42 52 2;C58 52 2",
+"犬小屋=いぬごや!:Q50 10 85 40 15 40;R20 40 60 50;C50 70 10",
+"お月見=おつきみ!:C70 25 15;Q30 95 50 95 60 75 20 75;C32 65 6;C48 65 6;C40 55 6",
+"ゴルフ!:L20 10 60 85;Q55 85 70 82 70 90;C80 90 3;L90 30 90 90;Q90 30 75 35 90 40",
+"りんご:C50 55 30;L50 25 50 10;Q50 18 65 8 62 20",
+"ぶどう:C40 35 8;C56 35 8;C48 50 8;C64 50 8;C56 65 8;L50 27 50 12",
+"さくらんぼ:C35 75 10;C65 75 10;P35 65 50 20 65 65",
+"ソフトクリーム:Q35 50 65 50 50 95;Q35 50 50 10 65 50/L38 38 62 38",
+"メロン!:C50 55 35;P20 40 40 50 30 75;P50 20 55 50 70 60;L50 20 50 10",
+"パイナップル:C50 65 25;P40 40 35 10 48 30 50 5 52 30 65 10 60 40/L35 55 65 80;L65 55 35 80",
+"ラーメン!:P10 45 90 45 75 85 25 85 10 45;P25 55 35 50 45 55 55 50 65 55 75 50;L60 40 75 5;L67 40 85 8",
+"おでこ!:C50 55 35;L25 40 75 40;C38 55 3;C62 55 3/L35 30 65 30",
+"ほっぺた!:C50 50 35;C30 60 7;C70 60 7;C40 45 3;C60 45 3",
+"鼻=はな!:C50 50 35;P50 35 42 62 58 62;C40 45 3;C60 45 3",
+"へそ!:Q30 20 70 20 75 85 25 85;C50 55 4",
+"足跡=あしあと!:Q20 50 30 50 30 80 20 80;Q55 20 65 20 65 50 55 50;C22 44 2;C29 44 2;C57 14 2;C64 14 2",
+"くしゃみ!:C40 50 20;L60 45 75 40;L60 50 80 50;L60 55 75 60;C85 35 3;C90 55 3",
+"あくび!:C50 50 30;C50 62 10;L35 45 45 45;L55 45 65 45",
+"ウインク!:C50 50 35;C38 45 4;L55 45 68 45;P40 65 50 70 60 65",
+"泣き虫=なきむし!:C50 45 30;L35 40 45 40;L55 40 65 40;L40 45 38 70;L60 45 62 70;P40 62 50 58 60 62",
+"笑顔=えがお:C50 50 35;P35 42 40 38 45 42;P55 42 60 38 65 42;P35 60 50 70 65 60",
+"お辞儀=おじぎ!:C30 40 6;L35 40 60 55;L60 55 60 90;L45 47 45 65/L20 95 80 95",
+"万歳=ばんざい!:C50 30 8;L50 38 50 65;L50 45 35 10;L50 45 65 10;L50 65 40 90;L50 65 60 90",
+"ジャンプ!:H50 15;L20 85 80 85;L35 70 35 75;L65 70 65 75",
+"昼寝=ひるね!:L10 75 90 75;C20 60 8;L28 62 80 62;P70 30 80 30 70 40 80 40;P85 15 92 15 85 22 92 22",
+"スキップ!:H45 20;Q70 75 85 75 78 85;L10 95 90 95",
+"腕相撲=うでずもう!:R10 70 80 20;L30 70 45 40;L70 70 55 40;C50 35 7",
+"握手=あくしゅ!:L5 50 40 50;L95 50 60 50;C50 50 12;L45 40 55 60",
+"敬礼=けいれい!:C50 30 10;L50 40 50 70;L50 48 65 48;L65 48 58 25;L50 70 42 92;L50 70 58 92",
+"指切り=ゆびきり!:L10 60 40 60;L90 40 60 40;C50 50 12;L40 60 50 38;L60 40 50 62",
+"スキー:H50 15;L20 80 85 55;L25 85 90 60;L40 40 30 75;L60 40 70 70",
+"スケート!:H50 15;L30 82 70 82;L30 88 70 88",
+"サッカー:C70 70 10;H30 20;L36 52 62 68",
+"野球=やきゅう:C70 30 6;L20 80 55 35;H25 40 .7/P10 95 50 85 90 95",
+"テニス:C30 30 15;L30 45 30 80;L15 30 45 30;L30 15 30 45;C70 30 6",
+"バスケットボール:C50 60 25;L25 60 75 60;L50 35 50 85;R30 10 40 15;L35 25 40 35",
+"水泳=すいえい!:P5 60 25 55 45 60 65 55 85 60;C40 45 6;L46 45 70 40;L30 50 15 40",
+"ボウリング:C25 70 15;Q65 30 75 30 78 85 62 85;Q80 40 88 40 90 85 78 85;C22 65 3",
+"卓球=たっきゅう:R10 50 80 30;L50 40 50 50;C30 30 8;L30 38 30 45;C65 25 3",
+"柔道=じゅうどう!:H30 25;H65 25;L38 36 57 36;L30 45 70 45",
+"剣道=けんどう!:H30 30;H70 30;L38 41 62 15;L62 41 38 15",
+"弓道=きゅうどう!:H25 30;P50 10 60 40 50 70;L50 10 50 70;L33 40 75 40",
+"マラカス:C30 30 12;L36 40 55 85;C70 30 12;L64 40 45 85",
+"トランペット:R15 45 50 10;Q65 50 90 30 90 70;C30 40 3;C40 40 3",
+"太陽=たいよう:C50 50 20;L50 20 50 5;L50 80 50 95;L20 50 5 50;L80 50 95 50;L28 28 18 18;L72 72 82 82",
+"月=つき:P60 10 35 25 30 50 35 75 60 90 45 70 42 50 45 30 60 10",
+"星=ほし:Q50 10 60 40 92 40 66 58 76 90 50 70 24 90 34 58 8 40 40 40",
+"虹=にじ:P5 80 15 40 50 20 85 40 95 80;P15 80 25 50 50 35 75 50 85 80;P25 80 35 60 50 50 65 60 75 80",
+"流れ星=ながれぼし:Q80 15 84 25 94 26 86 32 88 42 80 36 72 42 74 32 66 26 76 25;L70 32 10 80;L72 40 20 88",
+"雪=ゆき:L50 10 50 90;L15 30 85 70;L15 70 85 30;C20 85 3;C80 15 3",
+"竜巻=たつまき!:L15 15 85 15;L22 30 78 30;L32 45 68 45;L40 60 60 60;L45 75 55 75;L48 88 52 88",
+"地震=じしん!:R30 30 40 50;L15 80 85 80;P10 90 20 85 30 95 40 85 50 95 60 85 70 95;L22 30 28 40;L78 30 72 40",
+"山=やま:P5 85 35 25 50 50 65 30 95 85;L5 85 95 85;P28 40 35 45 42 40",
+"島=しま:P10 70 30 55 70 55 90 70;L50 55 52 20;P52 20 35 25;P52 20 70 25;P52 20 60 35",
+"滝=たき!:L10 15 40 15;L40 15 40 85;L50 15 50 85;L60 15 60 85;L60 15 90 15;C50 88 10",
+"砂漠=さばく!:P5 80 30 60 55 80;P45 70 70 50 95 70;L80 30 80 55;P80 40 88 35;C20 20 8",
+"森=もり:Q20 20 35 60 5 60;Q50 10 68 60 32 60;Q80 20 95 60 65 60;L20 60 20 75;L50 60 50 80;L80 60 80 75",
+"公園=こうえん!:L10 85 90 85;L15 40 15 85;L35 40 35 85;L15 40 35 40;C70 55 15;L70 70 70 85",
+"学校=がっこう:R15 40 70 50;Q35 40 50 25 65 40;C50 32 4;R42 65 16 25",
+"病院=びょういん!:R20 25 60 70;L50 35 50 55;L40 45 60 45;R42 75 16 20",
+"お城=おしろ:R25 50 50 40;Q20 50 50 30 80 50;Q30 30 50 15 70 30;R44 70 12 20",
+"神社=じんじゃ!:L15 20 85 20;L25 30 75 30;L30 20 30 90;L70 20 70 90",
+"お寺=おてら!:Q10 40 50 15 90 40;R20 40 60 45;L50 40 50 85",
+"家=いえ:Q50 15 85 45 15 45;R22 45 56 45;R42 65 16 25",
+"ビル!:R25 10 50 85;L35 20 35 30;L45 20 45 30;L55 20 55 30;L65 20 65 30;L35 45 35 55;L45 45 45 55;L55 45 55 55;L65 45 65 55",
+"橋=はし:P5 70 30 40 70 40 95 70;L5 70 95 70;L30 40 30 70;L70 40 70 70/P5 85 95 85",
+"東京タワー=とうきょうたわー!:Q50 5 75 90 25 90;L35 55 65 55;L42 30 58 30",
+"観覧車=かんらんしゃ:C50 40 30;L50 40 30 90;L50 40 70 90;C50 10 4;C80 40 4;C20 40 4;C50 70 4",
+"ディナー!:C50 55 25;C50 55 15;L15 30 15 80;L85 30 85 80;L80 30 90 30",
+"パン:Q15 70 20 35 50 25 80 35 85 70;L35 40 40 55;L50 35 55 50;L65 40 70 55",
+"食パン=しょくぱん:P20 85 20 35 15 25 30 15 70 15 85 25 80 35 80 85 20 85",
+"ホットドッグ:Q10 55 90 55 85 70 15 70;Q15 45 85 45 85 55 15 55;P20 50 35 46 50 50 65 46 80 50",
+"目覚まし時計=めざましどけい:C50 55 30;C25 20 10;C75 20 10;L50 55 50 35;L50 55 62 62;L30 85 25 95;L70 85 75 95",
+"テレビ:R15 25 70 50;L35 25 50 10;L65 25 50 10;L30 75 25 90;L70 75 75 90",
+"スマホ:R30 10 40 80;C50 80 4;L40 18 60 18",
+"パソコン:R20 20 60 40;Q20 60 80 60 90 80 10 80",
+"ランドセル:R25 25 50 60;P25 25 25 15 50 10 75 15 75 25;R40 45 20 10",
+"リュック!:Q30 20 70 20 75 85 25 85;R35 55 30 20;P40 20 40 10 60 10 60 20",
+"帽子=ぼうし:P10 70 90 70;P25 70 30 35 50 28 70 35 75 70;L28 55 72 55",
+"靴下=くつした:Q35 10 60 10 60 60 80 75 70 90 35 70;L35 20 60 20",
+"長靴=ながぐつ:P30 10 55 10 55 70 85 75 85 90 30 90 30 10",
+"マフラー!:C50 30 15;Q30 50 70 50 70 60 30 60;Q55 60 65 60 70 90 58 90",
+"リボン:Q50 50 15 30 15 70;Q50 50 85 30 85 70;C50 50 6",
+"ネクタイ:Q42 15 58 15 55 25 45 25;Q45 25 55 25 62 80 50 92 38 80",
+"Tシャツ=てぃーしゃつ:Q35 15 65 15 90 30 80 45 70 40 70 90 30 90 30 40 20 45 10 30",
+"ズボン:Q25 10 75 10 80 90 58 90 50 35 42 90 20 90",
+"スカート:Q35 25 65 25 85 85 15 85;L35 32 65 32",
+"着物=きもの!:Q25 15 75 15 75 90 25 90;L40 15 60 50;L60 15 40 50;L25 50 75 50;L25 58 75 58",
+"浴衣=ゆかた!:H50 20;Q38 30 62 30 62 90 38 90;L38 55 62 55;C20 20 5;C80 30 5",
+"王冠=おうかん:Q20 70 20 30 35 50 50 25 65 50 80 30 80 70;C35 60 3;C50 60 3;C65 60 3",
+"杖=つえ!:L50 30 50 95;C50 22 8;L35 15 30 5;L65 15 70 5",
+"ほうちょう:Q10 55 65 55 65 40 20 40;R65 45 30 10",
+"鍋=なべ:Q20 45 80 45 75 85 25 85;L10 50 20 50;L80 50 90 50;P40 45 40 38 60 38 60 45",
+"やかん:Q25 50 75 50 80 85 20 85;P25 50 35 30 65 30 75 50;L80 65 95 50;P40 30 50 20 60 30",
+"フライパン:C40 55 25;L65 55 95 55",
+"お箸=おはし:L30 10 45 90;L45 10 55 90",
+"スプーン:C50 25 15;L50 40 50 95",
+"コップ:Q25 20 75 20 70 90 30 90;L25 35 75 35",
+"ワイングラス!:Q25 15 75 15 50 50;L50 50 50 85;L35 85 65 85",
+"ストロー!:Q35 40 65 40 62 90 38 90;L55 40 70 5;L70 5 80 5",
+"ドア!:R30 10 40 85;C62 50 3;L20 95 80 95",
+"窓=まど:R20 20 60 60;L50 20 50 80;L20 50 80 50",
+"鍵=かぎ:C30 35 15;L45 35 90 35;L80 35 80 50;L70 35 70 45",
+"南京錠=なんきんじょう!:R25 45 50 40;P35 45 35 25 50 15 65 25 65 45;C50 62 4",
+"電池=でんち:R20 35 60 30;R80 43 6 14;L35 50 45 50;L60 45 60 55;L55 50 65 50",
+"コンセント!:R25 20 50 60;L42 35 42 50;L58 35 58 50;C50 65 4",
+"はしご:L30 5 30 95;L70 5 70 95;L30 20 70 20;L30 40 70 40;L30 60 70 60;L30 80 70 80",
+"バケツ:Q25 30 75 30 68 90 32 90;P25 30 50 10 75 30",
+"じょうろ:Q30 40 70 40 70 85 30 85;L30 50 10 30;P70 50 85 50 85 70;L5 25 15 35",
+"スコップ:L50 10 50 55;L40 10 60 10;Q35 55 65 55 50 95",
+"トロフィー:Q25 15 75 15 60 55 40 55;L50 55 50 75;R35 75 30 12;C20 30 8;C80 30 8",
+"メダル:C50 65 20;L35 10 45 48;L65 10 55 48;C50 65 10",
+"賞状=しょうじょう!:R15 20 70 60;C70 65 8;L25 35 60 35;L25 45 60 45",
+"地球儀=ちきゅうぎ:C50 40 28;P22 40 50 45 78 40;L50 70 50 85;L30 90 70 90;P20 15 15 40 20 65",
+"望遠鏡=ぼうえんきょう:Q20 50 75 20 80 30 25 60;L50 45 40 90;L50 45 60 90;C85 15 3",
+"虫眼鏡=むしめがね:C40 40 25;L58 58 90 90",
+"顕微鏡=けんびきょう!:Q40 10 55 10 55 45 40 45;P50 45 70 70 70 85;L30 85 80 85;L30 60 70 60",
+"注射=ちゅうしゃ!:R20 40 50 15;L70 47 95 47;L10 40 10 55;L5 47 20 47",
+"ばんそうこう:Q20 60 70 20 80 35 30 75;R42 40 15 12",
+"救急車=きゅうきゅうしゃ:R10 40 80 35;C28 78 8;C72 78 8;L50 50 50 65;L42 57 58 57;R40 30 10 10",
+"パトカー:P10 70 10 55 25 55 35 40 65 40 75 55 90 55 90 70 10 70;C28 72 7;C72 72 7;R45 30 10 10",
+"ヘリコプター:C45 55 18;L65 55 95 50;L45 37 45 28;L10 28 80 28;L35 73 30 85;L55 73 60 85;L20 85 70 85",
+"飛行機=ひこうき:Q10 50 85 45 95 50 85 55;Q40 50 60 15 70 15 60 50;Q40 52 60 85 70 85 60 52",
+"気球=ききゅう:C50 35 30;L28 55 40 75;L72 55 60 75;R40 75 20 15",
+"UFO=ゆーふぉー!:Q10 55 30 45 70 45 90 55 70 65 30 65;P30 45 35 30 50 25 65 30 70 45;L40 65 30 90;L60 65 70 90",
+"宇宙人=うちゅうじん!:Q30 20 70 20 60 60 40 60;C40 35 5;C60 35 5;L45 60 45 90;L55 60 55 90;L40 15 30 5;L60 15 70 5",
+"忍者=にんじゃ!:C50 30 18;L32 30 68 30;L32 38 68 38;L65 50 90 15",
+"侍=さむらい!:C50 30 15;L50 15 50 5;L50 45 50 75;L50 55 85 35;L40 75 60 75",
+"海賊=かいぞく!:C50 50 25;C40 45 6;L32 35 65 60;Q25 30 75 30 65 15 35 15",
+"魔法使い=まほうつかい!:Q50 5 70 40 30 40;L20 40 80 40;C50 50 10;L65 60 90 85;C92 88 3",
+"お姫様=おひめさま!:C50 30 12;Q35 15 65 15 60 5 50 12 40 5;Q38 45 62 45 80 95 20 95",
+"サンタクロース!:Q50 5 70 25 30 25;C50 35 12;Q40 45 60 45 50 70;Q30 50 70 50 75 95 25 95",
+"鬼=おに!:C50 50 30;Q35 25 30 5 42 22;Q58 22 70 5 65 25;C40 48 4;C60 48 4;L40 65 60 65",
+"人魚=にんぎょ!:C50 15 8;L50 23 50 50;L38 35 62 35;Q42 50 58 50 55 80 45 80;Q50 80 35 95 65 95",
+"天使=てんし!:C50 30 10;C50 12 10;Q40 45 60 45 65 90 35 90;Q38 55 15 40 20 70;Q62 55 85 40 80 70",
+"ミイラ!:H50 20;L42 15 58 15;L42 22 58 22;L45 35 55 35;L45 45 55 45",
+"コウモリ=こうもり:C50 50 8;Q42 50 10 30 15 55 25 50 30 65;Q58 50 90 30 85 55 75 50 70 65",
+"クモ=くも!:C50 50 10;C50 35 6;L42 45 20 30;L40 52 15 52;L42 58 20 75;L58 45 80 30;L60 52 85 52;L58 58 80 75",
+"てんとうむし:C50 55 25;C50 25 8;L50 33 50 80;C40 50 4;C60 50 4;C40 65 4;C60 65 4",
+"蚊=か!:C50 50 6;L50 56 50 80;Q50 50 30 30 40 50;Q50 50 70 30 60 50;L44 48 25 60;L56 48 75 60;L50 44 50 30",
+"ハチ=はち:C50 55 18;L36 50 64 50;L36 60 64 60;C70 45 7;Q45 37 30 15 40 15;Q55 37 60 15 70 15",
+"トンボ=とんぼ:L20 50 90 50;C15 50 6;Q35 50 50 20 55 50;Q35 50 50 80 55 50;Q55 50 70 25 75 50;Q55 50 70 75 75 50",
+"イカ=いか:Q50 10 70 40 65 60 35 60 30 40;L38 60 30 90;L45 60 42 92;L55 60 58 92;L62 60 70 90",
+"カニ=かに:C50 55 20;L50 35 40 20;L50 35 60 20;Q30 50 15 35 25 25;Q70 50 85 35 75 25;L32 62 15 75;L68 62 85 75",
+"クジラ=くじら:Q10 60 30 35 75 35 85 55 95 40 95 75 85 65 60 80 20 80;C25 50 3;L35 30 30 15;L35 30 40 15",
+"イルカ=いるか:Q10 55 40 35 75 40 90 30 85 50 90 70 75 60 40 70;Q45 37 55 20 60 38",
+"サメ=さめ:Q5 60 40 45 80 50 95 40 90 60 95 80 80 70 40 75;Q40 45 50 20 60 47;C22 55 2",
+"カメ=かめ:P15 65 30 35 70 35 85 65 15 65;C92 58 7;L25 65 22 80;L75 65 78 80",
+"ライオン:C50 50 30;C50 50 18;C44 45 2;C56 45 2;Q47 55 53 55 50 60",
+"パンダ:C50 55 25;C30 30 8;C70 30 8;C42 50 6;C58 50 6",
+"コアラ!:C50 55 22;C25 40 14;C75 40 14;Q46 50 54 50 54 65 46 65",
+"ゴリラ!:C50 30 15;Q30 45 70 45 85 90 15 90;L20 55 5 90;L80 55 95 90",
+"サル=さる:C50 40 20;C27 40 7;C73 40 7;C50 50 10;P70 70 85 75 80 60",
+"馬=うま:Q20 25 35 20 40 50 30 55;L40 45 80 45;L80 45 80 60;L40 60 80 60;L45 60 45 90;L75 60 75 90;L80 45 95 65",
+"ブタ=ぶた:C50 55 28;C50 60 10;C46 60 2;C54 60 2;Q30 30 32 15 42 28;Q58 28 68 15 70 30",
+"牛=うし:R25 35 50 30;C20 35 10;L30 65 30 85;L70 65 70 85;C45 45 5;C60 55 6;L12 26 8 18",
+"ひよこ:C50 60 22;C50 30 12;Q60 28 70 30 60 33;C47 27 2",
+"アヒル=あひる:C45 60 20;C60 30 12;Q70 30 85 34 70 38;L45 80 45 92",
+"カラス=からす!:Q20 50 60 35 80 50 60 65;C80 40 8;Q88 38 98 40 88 43;L45 60 42 80",
+"孔雀=くじゃく!:C50 35 8;L50 43 50 70;C50 55 32;C30 40 4;C70 40 4;C50 25 4",
+"おみくじ!:Q30 20 70 20 70 85 30 85;C50 15 5;L50 85 50 95",
+"かがみもち=かがみもち:Q15 70 85 70 75 90 25 90;Q20 70 25 50 75 50 80 70;Q30 50 35 35 65 35 70 50;C50 28 7",
+"お面=おめん!:C50 50 35;Q30 40 45 40 40 48;Q55 40 70 40 60 48;L20 50 5 45;L80 50 95 45"
+];
+</script>
+<script>/* へんてこペイント：ルールエンジン（ホスト側が唯一の正）。DOMに依存しないのでテストからも直接呼べます。 */
+(function (root) {
+'use strict';
+var LV = ['弱い', '普通', '強い', 'アストラウルトラ😎'];
+var CHARS = [['ふーさん', '🐻'], ['ミミ', '🐰'], ['ロボミ', '🤖'], ['ニャコ', '😺'], ['ポチ太', '🐶'], ['コンタ', '🦊']];
+
+/* ---------- お題の読み込み ---------- */
+function expand(spec) {             // 絵の書式 → [{s:[...strokes], ess:n}]
+  var parts = spec.split('/'), out = [], ess = 0;
+  parts.forEach(function (p, pi) {
+    p.split(';').forEach(function (cmd) {
+      cmd = cmd.trim(); if (!cmd) return;
+      var k = cmd[0], a = cmd.slice(1).trim().split(/\s+/).map(Number);
+      if (k === 'L') out.push(['L', a[0], a[1], a[2], a[3]]);
+      else if (k === 'C') out.push(['C', a[0], a[1], a[2]]);
+      else if (k === 'R') { var x = a[0], y = a[1], w = a[2], h = a[3];
+        out.push(['L', x, y, x + w, y], ['L', x + w, y, x + w, y + h], ['L', x + w, y + h, x, y + h], ['L', x, y + h, x, y]); }
+      else if (k === 'P' || k === 'Q') { for (var i = 0; i + 3 < a.length; i += 2) out.push(['L', a[i], a[i + 1], a[i + 2], a[i + 3]]);
+        if (k === 'Q') out.push(['L', a[a.length - 2], a[a.length - 1], a[0], a[1]]); }
+      else if (k === 'H') { var hx = a[0], hy = a[1], s = a[2] || 1;
+        out.push(['C', hx, hy, 5 * s], ['L', hx, hy + 5 * s, hx, hy + 20 * s], ['L', hx - 8 * s, hy + 11 * s, hx + 8 * s, hy + 11 * s],
+          ['L', hx, hy + 20 * s, hx - 7 * s, hy + 32 * s], ['L', hx, hy + 20 * s, hx + 7 * s, hy + 32 * s]); }
+    });
+    if (pi === 0) ess = out.length;
+  });
+  return { s: out, ess: ess };
+}
+var kata2hira = function (s) { return s.replace(/[\u30a1-\u30f6]/g, function (m) { return String.fromCharCode(m.charCodeAt(0) - 0x60); }); };
+function norm(s) {
+  s = String(s || '').normalize('NFKC').toLowerCase().replace(/[\s　、。．.！!？?〜~「」『』()（）]/g, '');
+  s = kata2hira(s).replace(/(さん|ちゃん|くん)$/, '');
+  return s;
+}
+function loadWords(cards) {
+  return cards.map(function (line, i) {
+    var c = line.indexOf(':'), head = line.slice(0, c), hard = head.indexOf('!') >= 0;
+    head = head.replace('!', '');
+    var disp = head.split('=')[0], read = head.split('=')[1] || '';
+    var keys = [disp, read].concat(disp.split('・')).filter(Boolean).map(norm);
+    var d = expand(line.slice(c + 1));
+    return { id: i, w: disp, read: read, keys: keys, hard: hard, draw: d.s, ess: d.ess, feat: feat(d.s) };
+  });
+}
+function isCorrect(word, guess) {
+  var g = norm(guess); if (!g) return false;
+  return word.keys.some(function (k) { return k === g || (k.length >= 2 && g.length - k.length <= 2 && g.length > k.length && (g.indexOf(k) === 0 || g.slice(-k.length) === k)); });
+}
+
+/* ---------- 乱数（テスト用にシード可） ---------- */
+var seed = Date.now() % 2147483647;
+function rnd() { seed = (seed * 48271) % 2147483647; return (seed - 1) / 2147483646; }
+function setSeed(s) { seed = (s % 2147483646) + 1; }
+function pick(a) { return a[Math.floor(rnd() * a.length)]; }
+function shuffle(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(rnd() * (i + 1)), t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+
+/* ---------- 絵の特徴量（CPU回答者が「見る」ための簡単な手がかり） ---------- */
+function feat(st) {
+  var nL = 0, nC = 0, cr = 0, minx = 100, miny = 100, maxx = 0, maxy = 0, hor = 0, ver = 0;
+  st.forEach(function (s) {
+    if (s[0] === 'C') { nC++; cr += s[3]; minx = Math.min(minx, s[1] - s[3]); maxx = Math.max(maxx, s[1] + s[3]); miny = Math.min(miny, s[2] - s[3]); maxy = Math.max(maxy, s[2] + s[3]); }
+    else { nL++; minx = Math.min(minx, s[1], s[3]); maxx = Math.max(maxx, s[1], s[3]); miny = Math.min(miny, s[2], s[4]); maxy = Math.max(maxy, s[2], s[4]);
+      var dx = Math.abs(s[3] - s[1]), dy = Math.abs(s[4] - s[2]); if (dy < dx * .3) hor++; else if (dx < dy * .3) ver++; }
+  });
+  var w = Math.max(1, maxx - minx), h = Math.max(1, maxy - miny);
+  return { nL: nL, nC: nC, cr: nC ? cr / nC : 0, asp: w / h, hor: nL ? hor / nL : 0, ver: nL ? ver / nL : 0 };
+}
+function sim(a, b) {
+  return Math.exp(-(Math.abs(a.nL - b.nL) / 4 + Math.abs(a.nC - b.nC) / 1.5 + Math.abs(a.cr - b.cr) / 12 + Math.abs(Math.log(a.asp / b.asp)) / .6 + Math.abs(a.hor - b.hor) * 1.5 + Math.abs(a.ver - b.ver) * 1.5));
+}
+
+/* ---------- CPUの絵 ----------
+ * 手描きライブラリ（topics.js）の要点ストロークを使う。強いほど要点だけ・ブレなし＝画数が少なく早く公開される。
+ * 弱いほど全部描いた上に手ブレと「へんてこ」な余計な線がつく。 */
+function cpuDraw(word, lv) {
+  var base = (lv >= 2 ? word.draw.slice(0, word.ess) : word.draw.slice()), jit = [3.5, 2, 1, 0][lv];
+  var out = base.map(function (s) {
+    var j = function (v) { return Math.round((v + (rnd() * 2 - 1) * jit) * 10) / 10; };
+    return s[0] === 'C' ? ['C', j(s[1]), j(s[2]), Math.max(2, j(s[3]))] : ['L', j(s[1]), j(s[2]), j(s[3]), j(s[4])];
+  });
+  if (lv === 0 && rnd() < .6) out.push(rnd() < .5 ? ['C', 10 + rnd() * 80, 10 + rnd() * 80, 3 + rnd() * 5] : ['L', rnd() * 100, rnd() * 100, rnd() * 100, rnd() * 100]);
+  if (lv === 3 && out.length > 3 && word.ess > 3) out = out;   // アストラは要点のみ（ライブラリの時点で最小構成）
+  return out;
+}
+
+/* ---------- CPUの回答 ----------
+ * 正直に書くと：CPUは絵を「理解」していません。お題を知った上で、レベル・お題の隠し難易度・
+ * 公開済み枚数・絵の特徴量（線と円の数・形の比率）と手描きライブラリとの近さから「当たる確率」を決め、
+ * 外れるときは特徴の似た別のお題を答えます。人の絵が本物の絵に近いほど（特徴量で）当たりやすくなります。 */
+var BASE = [.22, .42, .6, .78];
+function cpuGuess(G, W, lv) {
+  var target = W[G.target], k = G.revealed, p = 0, tries = [];
+  for (var i = 0; i < k; i++) {
+    var pi = G.order[i], st = G.drawings[pi] || [], f = feat(st), dlv = G.players[pi].cpu;
+    var clar;
+    if (dlv != null) clar = [.7, .9, 1.0, 1.12][dlv];
+    else { // 人の絵：ライブラリの全お題と比べて、正解のお題が何位くらいに似ているか
+      var st0 = sim(f, target.feat), below = 0;
+      W.forEach(function (w) { if (sim(f, w.feat) < st0) below++; });
+      clar = .45 + .75 * (below / W.length);
+    }
+    if (!st.length) clar = 0;
+    tries.push(clar);
+  }
+  var last = tries[tries.length - 1] || 0, best = Math.max.apply(null, tries.concat([0]));
+  p = BASE[lv] * (last * .6 + best * .4) * (target.hard ? .62 : 1) * (1 + .22 * (k - 1));
+  p = Math.min(.96, p);
+  if (rnd() < p) return target.w;
+  // 外れ：最新の絵に特徴が似たお題から（弱いほどランダム）
+  var lastSt = G.drawings[G.order[k - 1]] || [], f2 = feat(lastSt), used = G.guesses.map(function (g) { return norm(g.text); });
+  var cands = W.filter(function (w) { return w.id !== target.id && used.indexOf(norm(w.w)) < 0; })
+    .map(function (w) { return { w: w, s: sim(f2, w.feat) + rnd() * [1, .4, .15, .05][lv] }; })
+    .sort(function (a, b) { return b.s - a.s; });
+  if (lv === 0 && rnd() < .15) return 'うーん…わからない';
+  return (cands[Math.floor(rnd() * Math.min(4, cands.length))] || { w: { w: 'わからない' } }).w.w;
+}
+
+/* ---------- ゲーム進行 ---------- */
+function newGame(players, W) {
+  var deck = shuffle(W.map(function (w) { return w.id; }));
+  var cards = []; for (var i = 0; i + 6 <= deck.length; i += 6) cards.push(deck.slice(i, i + 6));
+  return { v: 1, players: players.map(function (p) { return { name: p.name, emoji: p.emoji || '🙂', cpu: p.cpu == null ? null : p.cpu, seat: p.seat || null, score: 0 }; }),
+    round: 0, ans: 0, phase: 'roll', cards: cards, card: null, die: 0, rollId: 0, target: null,
+    drawings: [], order: [], revealed: 0, guesses: [], result: null, log: [] };
+}
+function startRound(G) {
+  G.ans = G.round; G.phase = 'roll'; G.card = G.cards[G.round % G.cards.length]; G.die = 0; G.target = null;
+  G.drawings = G.players.map(function () { return null; }); G.order = []; G.revealed = 0; G.guesses = []; G.result = null;
+}
+function revealOrder(G) {
+  var n = G.players.length, ids = [];
+  for (var i = 0; i < n; i++) if (i !== G.ans && G.drawings[i] && G.drawings[i].length) ids.push(i);
+  return ids.sort(function (a, b) {
+    var d = G.drawings[a].length - G.drawings[b].length; if (d) return d;
+    return ((a - G.ans + n) % n) - ((b - G.ans + n) % n);   // 同画数は回答者から時計回り（左隣）に近い人が先
+  });
+}
+function award(G, k, pi) {   // k = 何枚目で正解したか（1始まり）
+  G.players[pi].score += 2;
+  G.players[G.ans].score += (k === 1 ? 3 : k <= 3 ? 2 : 1);
+  G.result = { ok: true, k: k, drawer: pi };
+  G.phase = 'roundEnd';
+}
+function act(G, W, a, from) {     // from: 操作した席（ローカルは null = 誰でも）
+  var n = G.players.length, isAns = (from == null || from === G.ans);
+  switch (a.t) {
+    case 'roll':
+      if (G.phase !== 'roll' || !isAns) return false;
+      G.die = a.die || (1 + Math.floor(rnd() * 6)); G.rollId++; G.target = G.card[G.die - 1]; G.phase = 'draw';
+      for (var i = 0; i < n; i++) if (i !== G.ans && G.players[i].cpu != null) G.drawings[i] = cpuDraw(W[G.target], G.players[i].cpu);
+      checkDrawDone(G); return true;
+    case 'submit':
+      if (G.phase !== 'draw') return false;
+      var pi = a.p; if (from != null && from !== pi) return false;
+      if (pi === G.ans || G.drawings[pi]) return false;
+      G.drawings[pi] = sanitizeStrokes(a.strokes); checkDrawDone(G); return true;
+    case 'skipWaiting':   // ホスト：切断した人を待たない
+      if (G.phase !== 'draw') return false;
+      for (var j = 0; j < n; j++) if (j !== G.ans && !G.drawings[j]) G.drawings[j] = [];
+      checkDrawDone(G); return true;
+    case 'guess':
+      if (G.phase !== 'reveal' || !isAns) return false;
+      var txt = String(a.text || '').slice(0, 30), k = G.revealed, ok = !!a.text && isCorrect(W[G.target], txt);
+      G.guesses.push({ text: txt || '（パス）', ok: ok, k: k, p: G.order[k - 1] });
+      if (ok) award(G, k, G.order[k - 1]);
+      else if (k < G.order.length) G.revealed++;
+      else { G.result = { ok: false }; G.phase = 'roundEnd'; }
+      return true;
+    case 'override':      // 描いた人の判定：「今の答えは正解でいいよ」（表記ゆれ・同義語対策）
+      if (from === G.ans) return false;
+      var last = G.guesses[G.guesses.length - 1];
+      if (!last || last.ok || last.text === '（パス）' || !(G.phase === 'reveal' || (G.phase === 'roundEnd' && G.result && !G.result.ok))) return false;
+      last.ok = true; last.overridden = true; G.revealed = last.k; award(G, last.k, last.p); return true;
+    case 'next':
+      if (G.phase !== 'roundEnd') return false;
+      G.round++;
+      if (G.round >= n) G.phase = 'end'; else startRound(G);
+      return true;
+  }
+  return false;
+}
+function checkDrawDone(G) {
+  for (var i = 0; i < G.players.length; i++) if (i !== G.ans && !G.drawings[i]) return;
+  G.order = revealOrder(G);
+  if (!G.order.length) { G.result = { ok: false, empty: true }; G.phase = 'roundEnd'; return; }
+  G.phase = 'reveal'; G.revealed = 1;
+}
+function sanitizeStrokes(s) {
+  if (!Array.isArray(s)) return [];
+  return s.slice(0, 200).filter(function (x) { return Array.isArray(x) && (x[0] === 'L' && x.length === 5 || x[0] === 'C' && x.length === 4); })
+    .map(function (x) { return [x[0]].concat(x.slice(1).map(function (v) { v = +v; return isFinite(v) ? Math.max(-10, Math.min(110, Math.round(v * 10) / 10)) : 0; })); });
+}
+function ranking(G) {
+  var top = Math.max.apply(null, G.players.map(function (p) { return p.score; }));
+  return G.players.map(function (p, i) { return { i: i, p: p, win: p.score === top }; }).sort(function (a, b) { return b.p.score - a.p.score; });
+}
+// オンライン送信用：その席に見せてよい情報だけ
+function viewFor(G, seat) {
+  var V = JSON.parse(JSON.stringify(G)); delete V.cards;
+  var secret = (seat === G.ans) && G.phase !== 'roundEnd' && G.phase !== 'end';
+  if (secret) { V.card = null; V.target = null; }
+  V.drawCounts = G.drawings.map(function (d) { return d ? d.length : -1; });
+  V.drawings = G.drawings.map(function (d, i) {
+    if (!d) return null;
+    if (G.phase === 'roundEnd' || G.phase === 'end' || i === seat) return d;
+    if (G.phase === 'reveal' && G.order.indexOf(i) > -1 && G.order.indexOf(i) < G.revealed) return d;
+    return null;
+  });
+  return V;
+}
+var E = { LV: LV, CHARS: CHARS, expand: expand, norm: norm, loadWords: loadWords, isCorrect: isCorrect, setSeed: setSeed, rnd: rnd, shuffle: shuffle,
+  feat: feat, sim: sim, cpuDraw: cpuDraw, cpuGuess: cpuGuess, newGame: newGame, startRound: startRound, act: act, revealOrder: revealOrder, ranking: ranking, viewFor: viewFor };
+root.HPE = E; if (typeof module !== 'undefined') module.exports = E;
+})(typeof window !== 'undefined' ? window : globalThis);
+</script>
+<script>/* へんてこペイント：画面・お絵かきパッド・オンライン（PeerJS, ホストが正） */
+'use strict';
+var $ = function (id) { return document.getElementById(id); };
+var E = window.HPE, W = E.loadWords(window.HP_CARDS);
+var Q = new URLSearchParams(location.search), TURBO = Q.has('turbo');
+if (Q.get('seed')) E.setSeed(+Q.get('seed'));
+var D = function (ms) { return TURBO ? Math.max(30, ms / 12) : ms; };
+var mode = null, G = null, mySeat = 0, localGate = null, lastRoll = 0, pumpT = null, confKey = '';
+var pads = {};   // 描きかけの線（再描画で消えないように round:seat ごとに保持）
+var padTool = 'L';
+var esc = function (s) { return String(s).replace(/[&<>"']/g, function (c) { return '&#' + c.charCodeAt(0) + ';'; }); };
+function show(id) { ['sTitle', 'sSetup', 'sOnline', 'sLobby', 'sGame'].forEach(function (s) { $(s).classList.toggle('hide', s !== id); }); window.scrollTo(0, 0); }
+function toast(t) { var d = document.createElement('div'); d.className = 'toast'; d.textContent = t; document.body.appendChild(d); setTimeout(function () { d.remove(); }, 2200); }
+function pname(p) { return (p.emoji || '') + esc(p.name); }
+
+/* ---------- 描画 ---------- */
+function fit(cv) { var r = cv.getBoundingClientRect(), dpr = Math.min(3, window.devicePixelRatio || 1), w = Math.max(50, Math.round(r.width * dpr)); if (cv.width !== w) { cv.width = w; cv.height = w; } var c = cv.getContext('2d'); c.setTransform(w / 100, 0, 0, w / 100, 0, 0); return c; }
+function drawStrokes(cv, st, upto, extra) {
+  var c = fit(cv); c.clearRect(0, 0, 100, 100); c.lineCap = 'round'; c.lineJoin = 'round';
+  var n = upto == null ? st.length : upto;
+  for (var i = 0; i < n && i < st.length; i++) { var s = st[i]; c.strokeStyle = '#3b2f4a'; c.lineWidth = 2.2; c.beginPath();
+    if (s[0] === 'C') c.arc(s[1], s[2], Math.max(.5, s[3]), 0, Math.PI * 2); else { c.moveTo(s[1], s[2]); c.lineTo(s[3], s[4]); } c.stroke(); }
+  if (extra) extra(c);
+}
+function animateTile(cv, st, key) {
+  if (animated[key]) { drawStrokes(cv, st); return; }
+  animated[key] = 1; var i = 0, step = Math.max(60, Math.min(220, 1600 / Math.max(1, st.length)));
+  (function f() { if (!cv.isConnected) return; drawStrokes(cv, st, i); if (i++ < st.length) setTimeout(f, D(step)); })();
+}
+var animated = {};
+
+/* ---------- お絵かきパッド（直線・正円のみ。端点と中心にスナップ） ---------- */
+function mountPad(cv, strokes, onChange) {
+  var start = null, cur = null, snapHit = null;
+  function pt(e) { var r = cv.getBoundingClientRect(); return [(e.clientX - r.left) / r.width * 100, (e.clientY - r.top) / r.height * 100]; }
+  function snapPts() { var a = []; strokes.forEach(function (s) { if (s[0] === 'L') a.push([s[1], s[2]], [s[3], s[4]]); else a.push([s[1], s[2]]); }); return a; }
+  function snap(p, from) {
+    var best = null, bd = 3.8; snapPts().forEach(function (q) { var d = Math.hypot(q[0] - p[0], q[1] - p[1]); if (d < bd) { bd = d; best = q; } });
+    if (best) { snapHit = best; return best.slice(); } snapHit = null;
+    if (from && padTool === 'L') {  // 水平・垂直・45°に吸着
+      var dx = p[0] - from[0], dy = p[1] - from[1], len = Math.hypot(dx, dy), ang = Math.atan2(dy, dx), st = Math.PI / 4, ra = Math.round(ang / st) * st;
+      if (Math.abs(ang - ra) < .07) return [from[0] + Math.cos(ra) * len, from[1] + Math.sin(ra) * len];
+    }
+    return p;
+  }
+  function make() { if (!start || !cur) return null;
+    if (padTool === 'L') return ['L', start[0], start[1], cur[0], cur[1]];
+    return ['C', start[0], start[1], Math.hypot(cur[0] - start[0], cur[1] - start[1])]; }
+  function redraw() {
+    drawStrokes(cv, strokes, null, function (c) {
+      var s = make(); if (s) { c.setLineDash([2, 1.6]); c.strokeStyle = '#7a5af8'; c.lineWidth = 2; c.beginPath();
+        if (s[0] === 'C') { c.arc(s[1], s[2], Math.max(.5, s[3]), 0, Math.PI * 2); c.stroke(); c.setLineDash([]); c.fillStyle = '#7a5af8'; c.beginPath(); c.arc(s[1], s[2], .9, 0, 7); c.fill(); }
+        else { c.moveTo(s[1], s[2]); c.lineTo(s[3], s[4]); c.stroke(); } c.setLineDash([]); }
+      if (snapHit) { c.strokeStyle = '#ff7a59'; c.lineWidth = 1; c.beginPath(); c.arc(snapHit[0], snapHit[1], 2.6, 0, 7); c.stroke(); }
+    });
+  }
+  cv.onpointerdown = function (e) { e.preventDefault(); cv.setPointerCapture(e.pointerId); start = snap(pt(e)); cur = start; redraw(); };
+  cv.onpointermove = function (e) { if (!start) return; e.preventDefault(); cur = snap(pt(e), start); redraw(); };
+  cv.onpointerup = cv.onpointercancel = function (e) {
+    if (!start) return; var s = make(); start = cur = null; snapHit = null;
+    if (s && (s[0] === 'L' ? Math.hypot(s[3] - s[1], s[4] - s[2]) >= 1.5 : s[3] >= 1.2)) { strokes.push(s.map(function (v, i) { return i ? Math.round(v * 10) / 10 : v; })); onChange(); }
+    redraw();
+  };
+  redraw(); return { redraw: redraw };
+}
+
+/* ---------- 進行（ローカル／ホスト） ---------- */
+function doAct(a) {
+  if (mode === 'client') { send({ t: 'act', a: a }); return; }
+  var from = mode === 'host' ? 0 : null;
+  if (a.p == null && a.t === 'submit') return;
+  if (E.act(G, W, a, mode === 'host' && a.t !== 'submit' ? from : null)) changed();
+}
+function changed() { render(); pump(); if (mode === 'host') broadcast(); }
+function pump() {
+  clearTimeout(pumpT); if (!G) return; var ap = G.players[G.ans];
+  if (G.phase === 'roll' && ap.cpu != null) pumpT = setTimeout(function () { if (E.act(G, W, { t: 'roll' }, null)) changed(); }, D(1300));
+  else if (G.phase === 'reveal' && ap.cpu != null) pumpT = setTimeout(function () {
+    var txt = E.cpuGuess(G, W, ap.cpu); if (E.act(G, W, { t: 'guess', text: txt }, null)) changed(); }, D(2300 + 300 * ((G.drawings[G.order[G.revealed - 1]] || []).length > 8 ? 2 : 1)));
+}
+function view() { return mode === 'host' ? E.viewFor(G, 0) : G; }
+
+/* ---------- 画面 ---------- */
+function render() {
+  if (!G) return; show('sGame'); var V = view(), P = V.players, n = P.length, ans = V.ans, me = mode === 'local' ? null : mySeat;
+  $('scores').innerHTML = P.map(function (p, i) { return '<span class="chip' + (i === ans && V.phase !== 'end' ? ' ans' : '') + '">' + (i === ans && V.phase !== 'end' ? '🎯' : '') + pname(p) + ' <b>' + p.score + '</b>' + (i === me ? '（あなた）' : '') + '</span>'; }).join('');
+  var humans = P.filter(function (p) { return p.cpu == null; }).length;
+  var ansHuman = P[ans].cpu == null, canAns = mode === 'local' ? ansHuman : me === ans;
+  var head = '<div class="phase">第' + (V.round + 1) + '/' + n + '回　回答者：' + pname(P[ans]) + '</div>';
+  var h = '', after = [];
+  var cnt = function (i) { return V.drawCounts ? V.drawCounts[i] : (V.drawings[i] ? V.drawings[i].length : -1); };
+  if (V.phase === 'roll') {
+    h = head + '<div class="card"><div class="topic">' + [1, 2, 3, 4, 5, 6].map(function (k) { return '<div><i>' + k + '</i>？？？</div>'; }).join('') + '</div></div>';
+    h += canAns ? '<button class="btn" id="bRoll">🎲 サイコロをふる</button><div style="text-align:center;font-size:13px;color:#998">出た番号の言葉がお題。あなたには見えません！</div>'
+      : '<div class="card" style="text-align:center">' + pname(P[ans]) + ' がサイコロをふります…</div>';
+    after.push(function () { var b = $('bRoll'); if (b) b.onclick = function () { b.disabled = true; doAct({ t: 'roll' }); }; });
+  } else if (V.phase === 'draw') {
+    var who = null, wait = false;
+    if (mode === 'local') {
+      var pend = []; for (var i = 0; i < n; i++) if (i !== ans && P[i].cpu == null && !V.drawings[i]) pend.push(i);
+      if (pend.length) { who = pend[0]; if (humans > 1 && localGate !== who) {
+        h = head + '<div class="card gate"><div class="em">🙈</div><p>回答者の <b>' + pname(P[ans]) + '</b> は見ないでね！</p><p>次は <b>' + pname(P[who]) + '</b> が描く番です。</p><button class="btn" id="bGate">' + esc(P[who].name) + 'さん、タップして描く</button></div>';
+        after.push(function () { $('bGate').onclick = function () { localGate = who; render(); }; }); who = -1; } }
+      else wait = true;
+    } else { if (me !== ans && cnt(me) === -1) who = me; else wait = true; }
+    if (who != null && who >= 0) h = drawUI(V, who, head, after);
+    else if (wait) {
+      h = head + '<div class="card"><div style="text-align:center;margin-bottom:6px">' + (me === ans ? '🤫 みんながお題を描いています…' : '✅ 描けました！ほかの人を待っています…') + '</div>' +
+        P.map(function (p, i) { return i === ans ? '' : '<div>' + (cnt(i) >= 0 ? '✅' : '✏️') + ' ' + pname(p) + '</div>'; }).join('') + '</div>';
+      if (mode === 'host') { h += '<button class="btn sm g" id="bSkip">⏭ 待たずに進める（切断した人をとばす）</button>'; after.push(function () { $('bSkip').onclick = function () { if (confirm('まだ描いていない人をとばしますか？')) doAct({ t: 'skipWaiting' }); }; }); }
+    }
+  } else if (V.phase === 'reveal' || V.phase === 'roundEnd') {
+    var end = V.phase === 'roundEnd';
+    if (!end) h = head + '<div style="text-align:center;font-size:14px">画数の少ない順に公開中：<b>' + V.revealed + '</b> / ' + V.order.length + ' 枚目</div>';
+    else {
+      var tw = W[V.target], R = V.result;
+      h = head + '<div class="card" style="text-align:center"><div>お題は…</div><div class="big">「' + esc(tw.w) + '」</div>' +
+        (R.ok ? '<div>🎉 <b>' + R.k + '枚目</b>で正解！ ' + pname(P[R.drawer]) + ' +2点 ／ ' + pname(P[ans]) + ' +' + (R.k === 1 ? 3 : R.k <= 3 ? 2 : 1) + '点</div>' : '<div>😢 だれも当てられませんでした</div>') + '</div>';
+      if (R.ok && confKey !== V.round + ':' + V.rollId) { confKey = V.round + ':' + V.rollId; confetti(); }
+    }
+    h += '<div class="tiles">' + V.order.map(function (pi, j) {
+      var vis = end || j < V.revealed, d = V.drawings[pi], c = cnt(pi);
+      var hit = V.result && V.result.ok && V.result.drawer === pi;
+      return vis && d ? '<div class="tile' + (hit ? ' hit' : '') + '"><span class="no">' + (j + 1) + '</span><canvas data-p="' + pi + '"></canvas><div class="cap">' + pname(P[pi]) + '・' + d.length + '画</div></div>'
+        : '<div class="tile wait">？<small>' + (j + 1) + '番目・' + pname(P[pi]) + '・' + c + '画</small></div>';
+    }).join('') + '</div>';
+    if (V.guesses.length) h += '<div class="card glist">' + V.guesses.map(function (g) { return '<div>' + g.k + '枚目：「' + esc(g.text) + '」 ' + (g.ok ? '<span class="ok">⭕ 正解' + (g.overridden ? '（描いた人の判定）' : '') + '</span>' : '<span class="ng">❌</span>') + '</div>'; }).join('') + '</div>';
+    var lastG = V.guesses[V.guesses.length - 1];
+    var canOv = lastG && !lastG.ok && lastG.text !== '（パス）' && (mode === 'local' ? true : (me !== ans)) && (!end || !V.result.ok);
+    if (!end) {
+      if (canAns) {
+        h += '<div class="card"><div style="font-size:13px;margin-bottom:4px">何の絵かな？（' + V.revealed + '枚目を見て1回答えられます）</div><div class="row"><input type="text" id="gIn" maxlength="20" placeholder="こたえ" autocomplete="off"><button class="btn sm" id="gGo" style="flex:0 0 auto">答える</button></div><button class="btn sm g" id="gPass">わからない（次の絵へ）</button></div>';
+        after.push(function () { var go = function () { var v = $('gIn').value.trim(); if (!v) return; doAct({ t: 'guess', text: v }); };
+          $('gGo').onclick = go; $('gIn').onkeydown = function (e) { if (e.key === 'Enter' && !e.isComposing) go(); }; $('gPass').onclick = function () { doAct({ t: 'guess', text: '' }); }; });
+      } else h += '<div class="card" style="text-align:center">' + (P[ans].cpu != null ? '🤔 ' + pname(P[ans]) + ' が考え中…' : pname(P[ans]) + ' が答えます…') + '</div>';
+    }
+    if (canOv) { h += '<button class="btn sm g" id="bOv">↩︎ さっきの「' + esc(lastG.text) + '」は正解にする（描いた人の判定）</button>';
+      after.push(function () { $('bOv').onclick = function () { if (confirm('「' + lastG.text + '」を正解にしますか？')) doAct({ t: 'override' }); }; }); }
+    if (end) {
+      h += '<div class="card"><div class="topic">' + V.card.map(function (id, k) { return '<div class="' + (k === V.die - 1 ? 'on' : '') + '"><i>' + (k + 1) + '</i>' + esc(W[id].w) + '</div>'; }).join('') + '</div></div>';
+      if (mode !== 'client') { h += '<button class="btn" id="bNext">' + (V.round + 1 >= n ? '結果発表へ' : '次の回へ（回答者は左隣）') + '</button>'; after.push(function () { $('bNext').onclick = function () { localGate = null; doAct({ t: 'next' }); }; }); }
+      else h += '<div style="text-align:center;color:#998">ホストが次へ進めるのを待っています…</div>';
+    }
+    after.push(function () { document.querySelectorAll('.tile canvas').forEach(function (cv) { var pi = +cv.dataset.p; animateTile(cv, V.drawings[pi], V.round + ':' + V.rollId + ':' + pi); }); });
+  } else if (V.phase === 'end') {
+    var rk = E.ranking(V);
+    h = '<div class="phase">🏁 結果発表</div><div class="card">' + rk.map(function (r, j) { return '<div class="seat"><span class="em">' + (r.win ? '🏆' : ['', '🥈', '🥉'][j] || '　') + '</span><span style="flex:1">' + pname(r.p) + '</span><b style="font-size:22px;color:#ff7a59">' + r.p.score + '点</b></div>'; }).join('') + '</div>';
+    if (mode !== 'client') h += '<button class="btn" id="bAgain">もう一度（同じメンバー）</button>';
+    h += '<button class="btn g" id="bTitle">タイトルへ</button>';
+    if (rk[0].win) confetti();
+    after.push(function () { var a = $('bAgain'); if (a) a.onclick = function () { G = E.newGame(G.players.map(function (p) { return { name: p.name, emoji: p.emoji, cpu: p.cpu, seat: p.seat }; }), W); E.startRound(G); localGate = null; pads = {}; changed(); };
+      $('bTitle').onclick = function () { location.href = location.pathname; }; });
+  }
+  if (V.die && V.rollId > lastRoll) { lastRoll = V.rollId; diceAnim(V.die); }
+  $('gameBody').innerHTML = h; after.forEach(function (f) { f(); });
+}
+function drawUI(V, who, head, after) {
+  var key = V.round + ':' + who, st = pads[key] || (pads[key] = []), P = V.players;
+  var h = head + '<div class="gameGrid"><div><div class="card"><div style="font-size:13px;text-align:center">' + pname(P[who]) + ' のお題（サイコロ：' + V.die + '）</div><div class="big">「' + esc(W[V.target].w) + '」</div><div class="topic">' +
+    V.card.map(function (id, k) { return '<div class="' + (k === V.die - 1 ? 'on' : '') + '"><i>' + (k + 1) + '</i>' + esc(W[id].w) + '</div>'; }).join('') + '</div></div></div><div>' +
+    '<canvas class="cv" id="pad"></canvas><div class="tools"><button id="tL" class="' + (padTool === 'L' ? 'on' : '') + '">／ 直線</button><button id="tC" class="' + (padTool === 'C' ? 'on' : '') + '">◯ 円</button><button id="tU">↩︎ 戻す</button><button id="tX">🗑 全消し</button></div>' +
+    '<div class="count">画数 <b id="cnt">' + st.length + '</b>　<small style="color:#998">（少ないほど先に見せられる！）</small></div>' +
+    '<div style="font-size:12px;color:#998;text-align:center">直線：始点から終点へドラッグ／円：中心から外へドラッグ。文字・記号はダメ（線だけの矢印はOK）</div>' +
+    '<button class="btn b3" id="bDone">これで完成！</button></div></div>';
+  after.push(function () {
+    var cv = $('pad'), pad, upd = function () { $('cnt').textContent = st.length; $('bDone').textContent = 'これで完成！（' + st.length + '画）'; $('bDone').disabled = !st.length; };
+    pad = mountPad(cv, st, upd); upd();
+    $('tL').onclick = function () { padTool = 'L'; $('tL').className = 'on'; $('tC').className = ''; };
+    $('tC').onclick = function () { padTool = 'C'; $('tC').className = 'on'; $('tL').className = ''; };
+    $('tU').onclick = function () { st.pop(); pad.redraw(); upd(); };
+    $('tX').onclick = function () { if (st.length && confirm('全部消しますか？')) { st.length = 0; pad.redraw(); upd(); } };
+    $('bDone').onclick = function () { if (!st.length) return; $('bDone').disabled = true; localGate = null; doAct({ t: 'submit', p: who, strokes: st.slice() }); };
+  });
+  return h;
+}
+var PIPS = { 1: [4], 2: [0, 8], 3: [0, 4, 8], 4: [0, 2, 6, 8], 5: [0, 2, 4, 6, 8], 6: [0, 2, 3, 5, 6, 8] };
+function dieHTML(n) { return [0, 1, 2, 3, 4, 5, 6, 7, 8].map(function (i) { return '<div class="pip' + (PIPS[n].indexOf(i) > -1 ? ' v' : '') + '"></div>'; }).join(''); }
+function diceAnim(n) {
+  var o = document.createElement('div'); o.className = 'dice'; o.id = 'diceOv'; o.innerHTML = '<div class="die spin">' + dieHTML(1) + '</div><div id="diceT">コロコロ…</div>'; document.body.appendChild(o);
+  var die = o.firstChild, t = 0, iv = setInterval(function () { die.innerHTML = dieHTML(1 + (t++ % 6)); }, D(90));
+  setTimeout(function () { clearInterval(iv); die.className = 'die land'; die.innerHTML = dieHTML(n); o.querySelector('#diceT').textContent = n + ' が出た！'; }, D(1100));
+  setTimeout(function () { o.remove(); }, D(2100)); o.onclick = function () { o.remove(); };
+}
+function confetti() { if (TURBO) return; for (var i = 0; i < 18; i++) { var s = document.createElement('div'); s.className = 'conf'; s.textContent = ['🎉', '✨', '🖍️', '⭐'][i % 4]; s.style.left = (Math.random() * 100) + 'vw'; s.style.animationDelay = (Math.random() * .6) + 's'; document.body.appendChild(s); setTimeout(function (x) { x.remove(); }.bind(null, s), 2600); } }
+
+/* ---------- ローカルの席設定 ---------- */
+var seats = (function () { try { return JSON.parse(localStorage.getItem('hp_seats')) || null; } catch (e) { return null; } })() ||
+  [{ h: 1, name: 'あなた' }, { ch: 0, lv: 1 }, { ch: 1, lv: 1 }, { ch: 2, lv: 1 }];
+function lvSel(v, attr) { return '<select ' + attr + '>' + E.LV.map(function (l, i) { return '<option value="' + i + '"' + (i === v ? ' selected' : '') + '>' + l + '</option>'; }).join('') + '</select>'; }
+function renderSeats() {
+  $('seatList').innerHTML = seats.map(function (s, i) {
+    if (s.h) return '<div class="seat"><span class="em">🙂</span><input type="text" data-n="' + i + '" value="' + esc(s.name) + '" maxlength="10"><button class="x" data-x="' + i + '">×</button></div>';
+    return '<div class="seat"><span class="em">' + E.CHARS[s.ch][1] + '</span><select data-c="' + i + '">' + E.CHARS.map(function (c, k) { return '<option value="' + k + '"' + (k === s.ch ? ' selected' : '') + '>' + c[0] + '</option>'; }).join('') + '</select>' + lvSel(s.lv, 'data-l="' + i + '"') + '<button class="x" data-x="' + i + '">×</button></div>';
+  }).join('');
+  $('seatList').querySelectorAll('[data-n]').forEach(function (e) { e.oninput = function () { seats[+e.dataset.n].name = e.value; }; });
+  $('seatList').querySelectorAll('[data-c]').forEach(function (e) { e.onchange = function () { seats[+e.dataset.c].ch = +e.value; renderSeats(); }; });
+  $('seatList').querySelectorAll('[data-l]').forEach(function (e) { e.onchange = function () { seats[+e.dataset.l].lv = +e.value; }; });
+  $('seatList').querySelectorAll('[data-x]').forEach(function (e) { e.onclick = function () { if (seats.length > 1) { seats.splice(+e.dataset.x, 1); renderSeats(); } }; });
+}
+function freeChar(list) { for (var k = 0; k < 6; k++) if (!list.some(function (s) { return s.ch === k; })) return k; return 0; }
+$('goLocal').onclick = function () { renderSeats(); show('sSetup'); };
+$('addHuman').onclick = function () { if (seats.length < 6) { seats.push({ h: 1, name: 'プレイヤー' + (seats.length + 1) }); renderSeats(); } };
+$('addCpu').onclick = function () { if (seats.length < 6) { seats.push({ ch: freeChar(seats), lv: 1 }); renderSeats(); } };
+$('startLocal').onclick = function () {
+  if (seats.length < 3) return toast('3人以上にしてね（CPUを足せます）');
+  if (!seats.some(function (s) { return s.h; })) return toast('人を1人以上入れてね');
+  try { localStorage.setItem('hp_seats', JSON.stringify(seats)); } catch (e) {}
+  mode = 'local'; G = E.newGame(seats.map(function (s) { return s.h ? { name: (s.name || '').trim() || 'ななし', emoji: '🙂' } : { name: E.CHARS[s.ch][0], emoji: E.CHARS[s.ch][1], cpu: s.lv }; }), W);
+  E.startRound(G); changed();
+};
+$('backTitle1').onclick = $('backTitle2').onclick = function () { show('sTitle'); };
+$('goRules').onclick = function () { $('rules').classList.remove('hide'); };
+$('rulesClose').onclick = function () { $('rules').classList.add('hide'); };
+$('goOnline').onclick = function () { $('onName').value = localStorage.getItem('hp_name') || ''; show('sOnline'); };
+
+/* ---------- オンライン ---------- */
+var ID_PREFIX = 'hentekko-v1-', CODE_CH = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+var ICE = Q.get('ice') ? Q.get('ice').split(',').map(function (u) { return { urls: u }; }) : [{ urls: 'stun:stun.l.google.com:19302' }];
+var PEER_OPTS = { debug: 1, config: { iceServers: ICE } };
+if (Q.get('peerhost')) { PEER_OPTS.host = Q.get('peerhost'); PEER_OPTS.port = +Q.get('peerport'); PEER_OPTS.path = Q.get('peerpath') || '/'; PEER_OPTS.secure = false; }
+var peer = null, conns = [], hostConn = null, lobby = null, roomCode = '';
+function genCode() { var s = ''; for (var i = 0; i < 4; i++) s += CODE_CH[Math.floor(Math.random() * CODE_CH.length)]; return s; }
+function myName() { var n = $('onName').value.trim().slice(0, 10); if (!n) { toast('なまえを入れてね'); return null; } localStorage.setItem('hp_name', n); return n; }
+$('mkRoom').onclick = function () {
+  var nm = myName(); if (!nm) return; mode = 'host'; roomCode = Q.get('code') || genCode();
+  lobby = [{ name: nm, emoji: '🙂', seat: 'host' }];
+  peer = new Peer(ID_PREFIX + roomCode, PEER_OPTS);
+  peer.on('open', function () { renderLobby(); });
+  peer.on('error', function (e) { if (e.type === 'unavailable-id') { roomCode = genCode(); toast('コードを作り直します'); setTimeout(function () { $('mkRoom').onclick(); }, 300); } else toast('通信エラー：' + e.type); });
+  peer.on('connection', function (c) {
+    c.on('data', function (m) { hostRecv(c, m); });
+    c.on('close', function () { conns = conns.filter(function (x) { return x !== c; }); if (lobby && !G) { lobby = lobby.filter(function (p) { return p.seat !== c.peer; }); renderLobby(); } });
+  });
+};
+function hostRecv(c, m) {
+  if (m.t === 'hello') {
+    if (!G) { if (lobby.length >= 6) { c.send({ t: 'err', msg: '満員です' }); return; }
+      lobby.push({ name: String(m.name || 'ななし').slice(0, 10), emoji: '🙂', seat: c.peer }); conns.push(c); renderLobby(); return; }
+    // ゲーム中：同じ名前の人の再接続を受け付ける
+    var idx = G.players.findIndex(function (p) { return p.cpu == null && p.name === m.name && p.seat !== 'host'; });
+    if (idx < 0) { c.send({ t: 'err', msg: 'ゲームはもう始まっています' }); return; }
+    G.players[idx].seat = c.peer; conns.push(c); broadcast(); return;
+  }
+  if (m.t === 'act' && G) { var seat = G.players.findIndex(function (p) { return p.seat === c.peer; }); if (seat < 0) return;
+    var a = m.a || {}; if (a.t === 'next' || a.t === 'skipWaiting') return;   // 進行はホストだけ
+    if (a.t === 'submit') a.p = seat;
+    if (E.act(G, W, a, seat)) changed(); }
+}
+function broadcast() {
+  if (!G) { conns.forEach(function (c) { try { c.send({ t: 'lobby', players: lobby, code: roomCode }); } catch (e) {} }); return; }
+  conns.forEach(function (c) { var s = G.players.findIndex(function (p) { return p.seat === c.peer; }); if (s >= 0) try { c.send({ t: 'state', g: E.viewFor(G, s), seat: s }); } catch (e) {} });
+}
+function renderLobby() {
+  show('sLobby'); $('lobCode').textContent = roomCode;
+  var L = lobby || [];
+  $('lobList').innerHTML = L.map(function (p, i) { return '<div class="seat"><span class="em">' + (p.emoji || '🙂') + '</span><span style="flex:1">' + esc(p.name) + (p.cpu != null ? '（' + E.LV[p.cpu] + '）' : '') + (i === 0 ? ' 👑' : '') + '</span>' + (mode === 'host' && i > 0 ? '<button class="x" data-k="' + i + '">×</button>' : '') + '</div>'; }).join('') +
+    (mode === 'host' ? '<div style="margin-top:6px;font-size:13px">CPUの強さ ' + lvSel(+(localStorage.getItem('hp_lv') || 1), 'id="lobLv"') + '</div>' : '');
+  $('lobHost').classList.toggle('hide', mode !== 'host'); $('lobWait').classList.toggle('hide', mode === 'host');
+  if (mode === 'host') {
+    $('lobList').querySelectorAll('[data-k]').forEach(function (b) { b.onclick = function () { var p = lobby[+b.dataset.k]; if (p.cpu == null) { var c = conns.find(function (x) { return x.peer === p.seat; }); if (c) { c.send({ t: 'err', msg: 'ホストに外されました' }); conns = conns.filter(function (x) { return x !== c; }); } } lobby.splice(+b.dataset.k, 1); renderLobby(); }; });
+    $('lobLv').onchange = function () { localStorage.setItem('hp_lv', this.value); };
+    $('lobStart').disabled = L.length < 3; $('lobStart').textContent = L.length < 3 ? '3人以上で始められます（CPU可）' : 'スタート！（' + L.length + '人）';
+    broadcast();
+  }
+}
+$('lobCpu').onclick = function () { if (lobby.length >= 6) return toast('6人までです'); var used = lobby.map(function (p) { return p.ch; }), ch = 0; while (used.indexOf(ch) > -1) ch++; var lv = +$('lobLv').value; lobby.push({ name: E.CHARS[ch][0], emoji: E.CHARS[ch][1], cpu: lv, ch: ch }); renderLobby(); };
+$('lobStart').onclick = function () { if (lobby.length < 3) return; G = E.newGame(lobby, W); E.startRound(G); mySeat = 0; changed(); };
+$('lobLeave').onclick = function () { location.href = location.pathname; };
+$('copyLink').onclick = function () { var u = location.origin + location.pathname + '?room=' + roomCode; (navigator.clipboard ? navigator.clipboard.writeText(u) : Promise.reject()).then(function () { toast('コピーしました'); }, function () { prompt('このリンクを送ってね', u); }); };
+$('joinRoom').onclick = function () {
+  var nm = myName(); if (!nm) return; var code = $('onCode').value.trim().toUpperCase(); if (code.length < 4) return toast('部屋コードを入れてね');
+  mode = 'client'; roomCode = code; peer = new Peer(PEER_OPTS); toast('つないでいます…');
+  peer.on('open', function () { hostConn = peer.connect(ID_PREFIX + code, { reliable: true });
+    hostConn.on('open', function () { hostConn.send({ t: 'hello', name: nm }); });
+    hostConn.on('data', function (m) {
+      if (m.t === 'lobby') { lobby = m.players; renderLobby(); }
+      else if (m.t === 'state') { G = m.g; mySeat = m.seat; render(); }
+      else if (m.t === 'err') { toast(m.msg); setTimeout(function () { location.href = location.pathname; }, 1800); }
+    });
+    hostConn.on('close', function () { toast('ホストとの接続が切れました'); });
+  });
+  peer.on('error', function (e) { toast(e.type === 'peer-unavailable' ? 'その部屋が見つかりません' : '通信エラー：' + e.type); });
+};
+function send(m) { if (hostConn && hostConn.open) hostConn.send(m); else toast('つながっていません'); }
+if (Q.get('room')) { $('onCode').value = Q.get('room'); $('goOnline').onclick(); }
+
+/* タイトルのお絵かきデモ */
+(function () { var cv = $('titleCv'), i = 0, list = E.shuffle(W.filter(function (w) { return !w.hard; })).slice(0, 12);
+  function loop() { if (!cv.isConnected || $('sTitle').classList.contains('hide')) return setTimeout(loop, 1500); var w = list[i++ % list.length], st = w.draw.slice(0, w.ess), k = 0;
+    (function f() { drawStrokes(cv, st, k, function (c) { if (k > st.length) { c.font = '7px sans-serif'; c.fillStyle = '#ff7a59'; c.textAlign = 'center'; c.fillText(w.w + '（' + st.length + '画）', 50, 98); } }); if (k++ <= st.length) setTimeout(f, 180); else setTimeout(loop, 1600); })(); }
+  setTimeout(loop, 200); })();
+window.HP_DEBUG = { get G() { return G; }, W: W, E: E, doAct: doAct };
+</script>
+</body></html>
