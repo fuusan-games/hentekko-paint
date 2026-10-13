@@ -100,7 +100,7 @@ function render() {
       var pend = []; for (var i = 0; i < n; i++) if (i !== ans && P[i].cpu == null && !V.drawings[i]) pend.push(i);
       if (pend.length) { who = pend[0]; if (humans > 1 && localGate !== who) {
         h = head + '<div class="card gate"><div class="em">🙈</div><p>回答者の <b>' + pname(P[ans]) + '</b> は見ないでね！</p><p>次は <b>' + pname(P[who]) + '</b> が描く番です。</p><button class="btn" id="bGate">' + esc(P[who].name) + 'さん、タップして描く</button></div>';
-        after.push(function () { $('bGate').onclick = function () { localGate = who; render(); }; }); who = -1; } }
+        var gw = who; after.push(function () { $('bGate').onclick = function () { localGate = gw; render(); }; }); who = -1; } }
       else wait = true;
     } else { if (me !== ans && cnt(me) === -1) who = me; else wait = true; }
     if (who != null && who >= 0) h = drawUI(V, who, head, after);
